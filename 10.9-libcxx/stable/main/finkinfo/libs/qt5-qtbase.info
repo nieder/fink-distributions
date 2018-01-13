@@ -1,10 +1,9 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtbase
 # OPENSSL110 FTBFS (see also qt4)
-# If we did not build with -openssl-linked, would have to deal with
-# dlopen/dlsym symbol-wrapper signatures also.
-Version: 5.7.1
-Revision: 5
+# beware possible dlopen() vs linking
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL/OpenSSL
@@ -31,28 +30,27 @@ BuildDepends: <<
 	dbus1.3-dev (>= 1.4.18-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
-	fink-package-precedence,
+	#fink-package-precedence,
 	fontconfig2-dev,
 	freetype219,
 	glib2-dev,
-	libiconv-dev,
 	libicu55-dev,
 	libjpeg9,
-	libpcre1,
+	libpcre2,
 	libpng16,
 	openssl100-dev,
 	pkgconfig,
 	sqlite3-dev,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	(%type_raw[qt] = x11) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtbase-opensource-src-%v.tar.xz
-Source-MD5: f0809befe04160fbb73bbf38a06a2073
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtbase-opensource-src-%v.tar.xz
+Source-MD5: 96f79e2350c7597632abade992fd3f8f
 PatchFile: qt5-qtbase.patch
-PatchFile-MD5: 96cca9be70756edeea993ced82a9dc47
+PatchFile-MD5: 3f84c95f2de227213b820f88dacf25f9
 #PatchFile2: qt5-x11-qtbase.patch
 #PatchFile2-MD5: a997e3de7f53d776915fd732eabec0f9
 PatchScript: <<
@@ -65,10 +63,12 @@ PatchScript: <<
 	
 	sed -e 's|@FINK_ARCH@|%m|g' \
 		-e 's|@FINK_PREFIX@|%p|g' \
+		-e "s|@XCODE_PREFIX@|$XCODE_PREFIX|g" \
 		-e "s|@MACOSX_DEPLOYMENT_TARGET@|$MACOSX_DEPLOYMENT_TARGET|g" \
 		-e "s|@SDK_PATH@|$SDK_PATH|g" \
 		-e 's|@PATH_TO_PG_CONFIG@|/usr/bin|g' \
 		-e "s|@QT_PLUGINS_DIR@|$QT_FINK_PREFIX/plugins|g" < %{PatchFile} | patch -p1
+	#perl -pi -e 's|-MMD||g' configure qmake/generators/unix/unixmake2.cpp
 	### X11 only patches
 	#if [ "%type_raw[qt]" == "x11" ]; then
 		#patch -p1 < %{PatchFile2}
@@ -80,7 +80,6 @@ PatchScript: <<
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
 NoSetCXXFLAGS: true
-SetCXXFLAGS: -MD
 
 GCC: 4.0
 CompileScript: <<
@@ -97,7 +96,9 @@ CompileScript: <<
 	if [ "%type_raw[qt]" == "mac" ]; then
 		PLATFORM_CONFIGS="-no-xinput2 -no-xcb-xlib -no-xcb -framework"
 	fi
-	./configure \
+	mkdir finkbuild
+	pushd finkbuild
+	../configure \
 		-prefix ${QT_FINK_PREFIX} \
 		-bindir ${QT_FINK_PREFIX}/bin \
 		-headerdir ${QT_FINK_PREFIX}/include \
@@ -137,10 +138,10 @@ CompileScript: <<
 		-openssl-linked \
 		-system-pcre \
 		-glib \
-		-no-pulseaudio \
+		-no-use-gold-linker \
 		-no-rpath \
 		-cups \
-		-iconv \
+		-no-iconv \
 		-no-evdev \
 		-icu \
 		-no-fontconfig \
@@ -148,7 +149,6 @@ CompileScript: <<
 		-no-directfb \
 		-no-linuxfb \
 		-no-kms \
-		-no-gstreamer \
 		-nomake examples \
 		-v \
 		-optimized-qmake \
@@ -157,20 +157,24 @@ CompileScript: <<
 		${PLATFORM_CONFIGS}
 
 	# build broken with Fink make-4.1
-	/usr/bin/make
-	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
+	/usr/bin/make -w
+	popd
+	# setting -MD or -MMD in CXXFLAGS causes the build to fail in src/sqldrivers
+	#fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
 InstallScript: <<
 	#!/bin/sh -ev
+	pushd finkbuild
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	popd
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
 		### keep <space> at end of the 'want' list of .pc files
-		want="Qt5Bootstrap.pc Qt5Concurrent.pc Qt5Core.pc Qt5DBus.pc Qt5Gui.pc Qt5Network.pc Qt5OpenGL.pc Qt5OpenGLExtensions.pc Qt5PlatformSupport.pc Qt5PrintSupport.pc Qt5Sql.pc Qt5Test.pc Qt5Widgets.pc Qt5Xml.pc "
+		want="Qt5AccessibilitySupport.pc Qt5Bootstrap.pc Qt5CglSupport.pc Qt5ClipboardSupport.pc Qt5Concurrent.pc Qt5Core.pc Qt5DBus.pc Qt5DeviceDiscoverySupport.pc Qt5EventDispatcherSupport.pc Qt5FbSupport.pc Qt5FontDatabaseSupport.pc Qt5GraphicsSupport.pc Qt5Gui.pc Qt5Network.pc Qt5OpenGL.pc Qt5OpenGLExtensions.pc Qt5PlatformCompositorSupport.pc Qt5PrintSupport.pc Qt5Sql.pc Qt5Test.pc Qt5ThemeSupport.pc Qt5Widgets.pc Qt5Xml.pc "
 		have=`/bin/ls -1 | tr '\n' ' '`
 	popd
 	if [ "$want" != "$have" ]; then
@@ -213,8 +217,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Concurrent.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtConcurrent.framework/Versions/5/QtConcurrent       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Concurrent.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtConcurrent.framework/Versions/5/QtConcurrent       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Concurrent.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: 
 <<
@@ -224,15 +228,15 @@ SplitOff2: <<
 	Depends: <<
 		glib2-shlibs,
 		libicu55-shlibs,
-		libpcre1-shlibs
+		libpcre2-shlibs
 	<<
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtCore.framework/Versions/5/QtCore
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Core.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCore.framework/Versions/5/QtCore       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Core.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCore.framework/Versions/5/QtCore       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Core.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The Qt Core module forms the foundation of all Qt-based applications
@@ -257,8 +261,8 @@ SplitOff3: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5DBus.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDBus.framework/Versions/5/QtDBus       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DBus.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDBus.framework/Versions/5/QtDBus       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DBus.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtDBus module is a Unix-only library that you can use to make
@@ -285,16 +289,19 @@ SplitOff4: <<
 		libpng16-shlibs,
 		( %type_pkg[qt] = x11 ) x11-shlibs
 	<<
+	Conflicts: qt5-%type_pkg[qt]-qtbase (<< 5.9.3-1)
+	Replaces: qt5-%type_pkg[qt]-qtbase (<< 5.9.3-1)
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtGui.framework/Versions/5/QtGui
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Gui.5*.dylib
+		lib/qt5-%type_pkg[qt]/plugins/generic/libqtuiotouchplugin.so
 		lib/qt5-%type_pkg[qt]/plugins/imageformats/libq{gif,ico,jpeg}.so
 		lib/qt5-%type_pkg[qt]/plugins/platforms/libq{minimal,offscreen}.so
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/plugins/platforminputcontexts
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtGui.framework/Versions/5/QtGui       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Gui.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtGui.framework/Versions/5/QtGui       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Gui.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: The QtGui module extends QtCore with GUI functionality.
 <<
@@ -311,8 +318,8 @@ SplitOff5: <<
 		lib/qt5-%type_pkg[qt]/plugins/bearer
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtNetwork.framework/Versions/5/QtNetwork       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Network.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtNetwork.framework/Versions/5/QtNetwork       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Network.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtNetwork module provides classes to make network
@@ -333,8 +340,8 @@ SplitOff6: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5OpenGL.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtOpenGL.framework/Versions/5/QtOpenGL       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5OpenGL.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtOpenGL.framework/Versions/5/QtOpenGL       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5OpenGL.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The Qt OpenGL module makes it easy to use OpenGL in Qt applications.
@@ -358,8 +365,8 @@ SplitOff7: <<
 		lib/qt5-%type_pkg[qt]/plugins/printsupport
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5PrintSupport.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtPrintSupport.framework/Versions/5/QtPrintSupport       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5PrintSupport.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 print support module.
@@ -376,8 +383,8 @@ SplitOff8: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Sql.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtSql.framework/Versions/5/QtSql       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Sql.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtSql.framework/Versions/5/QtSql       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Sql.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtSQL module provides support for accessing SQL
@@ -393,8 +400,8 @@ SplitOff9: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Test.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtTest.framework/Versions/5/QtTest       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Test.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtTest.framework/Versions/5/QtTest       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Test.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtTest module provides classes for unit testing
@@ -414,8 +421,8 @@ SplitOff10: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Widgets.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWidgets.framework/Versions/5/QtWidgets       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Widgets.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWidgets.framework/Versions/5/QtWidgets       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Widgets.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 
@@ -430,8 +437,8 @@ SplitOff11: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Xml.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtXml.framework/Versions/5/QtXml       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Xml.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtXml.framework/Versions/5/QtXml       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Xml.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtXml module provides a stream reader and writer
@@ -535,24 +542,11 @@ of the packages the same way they do.
 DescPort: <<
 List of patched files and the reasoning
 ---------------------------------------
-qtbase/config.tests/unix/gnu-libiconv/gnu-libiconv.cpp
-Correctly detect our gnu-libiconv
-
 qtbase/mkspecs/common/gcc-base-mac.conf
 qtbase/mkspecs/common/mac.conf
 Plugins need to be -bundle, not -dynamiclib, and end in .so
 Adapted from:
 https://bugreports.qt.io/browse/QTBUG-2227
-
-src/plugins/platforms/cocoa/qcocoahelpers.mm
-src/plugins/platforms/cocoa/qcocoahelpers.h
-Xcode9
-Based on https://bugreports.qt.io/browse/QTBUG-62266
-
-src/corelib/global/qsystemdetection.h
-Add 10.13 to list of macro tokens
-Based on https://bugreports.qt.io/browse/QTBUG-62658
-Rest of patch goes into QtConnectivity package to build on 10.13+.
 <<
 <<
 # End Info4
