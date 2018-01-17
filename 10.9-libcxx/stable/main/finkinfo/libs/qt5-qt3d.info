@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qt3d
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -12,30 +12,38 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 
 #	qt5-%type_pkg[qt]-qt3dcollision-shlibs (= %v-%r),
 Depends: <<
+	qt5-%type_pkg[qt]-qt3danimation-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3dcore-shlibs (= %v-%r),
+	qt5-%type_pkg[qt]-qt3dextras-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3dinput-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3dlogic-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3dquick-shlibs (= %v-%r),
+	qt5-%type_pkg[qt]-qt3dquickanimation-shlibs (= %v-%r),
+	qt5-%type_pkg[qt]-qt3dquickextras-shlibs (= %v-%r),
+	qt5-%type_pkg[qt]-qt3dquickinput-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3dquickrender-shlibs (= %v-%r),
+	qt5-%type_pkg[qt]-qt3dquickscene2d-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qt3drender-shlibs (= %v-%r)
 <<
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	libassimp,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qt3d-opensource-src-%v.tar.xz
-Source-MD5: 5ddde27e7fa6eb1e422a1f54d8a7cbeb
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qt3d-opensource-src-%v.tar.xz
+Source-MD5: 6cad26826bcea3b5d77649eafde65519
 
 PatchScript: <<
 	# qmake/pkg-config expects -I%p/include/assimp, but pkg uses #include <assimp/*.h>
@@ -55,11 +63,13 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	#if [ "%type_raw[qt]" == "mac" ]; then
-	#	qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
+	#	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
 	#fi
 	qmake $qmake_flags
-	make -w
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/doc docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -68,11 +78,12 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
 		### keep <space> at end of the 'want' list of .pc files
-		want="Qt53DCore.pc Qt53DExtras.pc Qt53DInput.pc Qt53DLogic.pc Qt53DQuick.pc Qt53DQuickExtras.pc Qt53DQuickInput.pc Qt53DQuickRender.pc Qt53DRender.pc "
+		want="Qt53DAnimation.pc Qt53DCore.pc Qt53DExtras.pc Qt53DInput.pc Qt53DLogic.pc Qt53DQuick.pc Qt53DQuickAnimation.pc Qt53DQuickExtras.pc Qt53DQuickInput.pc Qt53DQuickRender.pc Qt53DQuickScene2D.pc Qt53DRender.pc "
 		have=`/bin/ls -1 | tr '\n' ' '`
 	popd
 	if [ "$want" != "$have" ]; then
@@ -134,7 +145,8 @@ SplitOff2: <<
 	Description: Qt 3D Core library (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
 	<<
 	Conflicts: qt5-%type_pkg[qt]-qt3dcollision-shlibs (<< 5.6.0)
 	Replaces: qt5-%type_pkg[qt]-qt3dcollision-shlibs (<< 5.6.0)
@@ -143,14 +155,62 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DCore.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DCore.framework/Versions/5/Qt3DCore       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DCore.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DCore.framework/Versions/5/Qt3DCore       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DCore.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D module.
 	<<
 <<
 SplitOff3: <<
+	Package: qt5-%type_pkg[qt]-qt3danimation-shlibs
+	Description: Qt 3D Animation library (%type_pkg[qt])
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DAnimation.framework/Versions/5/Qt3DAnimation
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DAnimation.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DAnimation.framework/Versions/5/Qt3DAnimation       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DAnimation.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D animation module.
+	<<
+<<
+SplitOff4: <<
+	Package: qt5-%type_pkg[qt]-qt3dextras-shlibs
+	Description: Qt 3D Extras library (%type_pkg[qt])
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DExtras.framework/Versions/5/Qt3DExtras
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DExtras.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DExtras.framework/Versions/5/Qt3DExtras       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DExtras.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D extras module.
+	<<
+<<
+SplitOff5: <<
 	Package: qt5-%type_pkg[qt]-qt3dinput-shlibs
 	Description: Qt 3D Input library (%type_pkg[qt])
 	Depends: <<
@@ -158,41 +218,43 @@ SplitOff3: <<
 		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
 	<<
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DInput.framework/Versions/5/Qt3DInput
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DInput.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DInput.framework/Versions/5/Qt3DInput       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DInput.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DInput.framework/Versions/5/Qt3DInput       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DInput.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D input module.
 	<<
 <<
-SplitOff4: <<
+SplitOff6: <<
 	Package: qt5-%type_pkg[qt]-qt3dlogic-shlibs
 	Description: Qt 3D Logic library (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
 	<<
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DLogic.framework/Versions/5/Qt3DLogic
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DLogic.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DLogic.framework/Versions/5/Qt3DLogic       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DLogic.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DLogic.framework/Versions/5/Qt3DLogic       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DLogic.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D logic module.
 	<<
 <<
-SplitOff5: <<
+SplitOff7: <<
 	Package: qt5-%type_pkg[qt]-qt3dquick-shlibs
 	Description: Qt 3D Quick
 	Depends: <<
@@ -200,21 +262,103 @@ SplitOff5: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
 	<<
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DQuick.framework/Versions/5/Qt3DQuick
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuick.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuick.framework/Versions/5/Qt3DQuick       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuick.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuick.framework/Versions/5/Qt3DQuick       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuick.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D Quick module.
 	<<
 <<
-SplitOff6: <<
+SplitOff8: <<
+	Package: qt5-%type_pkg[qt]-qt3dquickanimation-shlibs
+	Description: Qt 3D Quick Animation
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3danimation-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DQuickAnimation.framework/Versions/5/Qt3DQuickAnimation
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuickAnimation.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickAnimation.framework/Versions/5/Qt3DQuickAnimation       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickAnimation.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D Quick Animation module.
+	<<
+<<
+SplitOff9: <<
+	Package: qt5-%type_pkg[qt]-qt3dquickextras-shlibs
+	Description: Qt 3D Quick Extras
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DQuickExtras.framework/Versions/5/Qt3DQuickExtras
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuickAnimation.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickExtras.framework/Versions/5/Qt3DQuickExtras       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickExtras.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D Quick Extras module.
+	<<
+<<
+SplitOff10: <<
+	Package: qt5-%type_pkg[qt]-qt3dquickinput-shlibs
+	Description: Qt 3D Quick Extras
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DQuickInput.framework/Versions/5/Qt3DQuickInput
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuickInput.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickInput.framework/Versions/5/Qt3DQuickInput       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickInput.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D Quick Input module.
+	<<
+<<
+SplitOff11: <<
 	Package: qt5-%type_pkg[qt]-qt3dquickrender-shlibs
 	Description: Qt 3D Quick Render
 	Depends: <<
@@ -225,7 +369,8 @@ SplitOff6: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
 	<<
 	Conflicts: qt5-%type_pkg[qt]-qt3dquickrenderer-shlibs (<< 5.6.0)
 	Replaces: qt5-%type_pkg[qt]-qt3dquickrenderer-shlibs (<< 5.6.0)
@@ -234,21 +379,48 @@ SplitOff6: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuickRender.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickRender.framework/Versions/5/Qt3DQuickRender       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickRender.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickRender.framework/Versions/5/Qt3DQuickRender       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickRender.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D Quick Render module.
 	<<
 <<
-SplitOff7: <<
+SplitOff12: <<
+	Package: qt5-%type_pkg[qt]-qt3dquickscene2d-shlibs
+	Description: Qt 3D Scene 2D
+	Depends: <<
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/Qt3DQuickScene2D.framework/Versions/5/Qt3DQuickScene2D
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DQuickScene2D.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DQuickScene2D.framework/Versions/5/Qt3DQuickScene2D       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DQuickScene2D.5.dylib       5.9.0 %n (>= 5.9.3-1)
+	<<
+	DescDetail: <<
+Qt5 3D Scene module.
+	<<
+<<
+SplitOff13: <<
 	Package: qt5-%type_pkg[qt]-qt3drender-shlibs
 	Description: Qt 3D Quick Render
 	Depends: <<
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
 	<<
 	Conflicts: qt5-%type_pkg[qt]-qt3drenderer-shlibs (<< 5.6.0)
 	Replaces: qt5-%type_pkg[qt]-qt3drenderer-shlibs (<< 5.6.0)
@@ -257,34 +429,50 @@ SplitOff7: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt53DRender.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DRender.framework/Versions/5/Qt3DRender       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DRender.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/Qt3DRender.framework/Versions/5/Qt3DRender       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt53DRender.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 3D Render module.
 	<<
 <<
-SplitOff10: <<
+SplitOff20: <<
 	Package: qt5-%type_pkg[qt]-qml-module-qt3d
 	Description: Qt5 Qt3D QML module (%type_pkg[qt])
 	Depends: <<
+		qt5-%type_pkg[qt]-qt3danimation-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquickanimation-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquickextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquickinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquickrender-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
 	<<
 	Files: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/Qt3D
 	<<
 	DescDetail: 
 <<
-SplitOff11: <<
+SplitOff21: <<
 	Package: qt5-%type_pkg[qt]-qml-module-qtquick-scene3d
 	Description: Qt5 Scene3D QML module (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquickscene2d-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
@@ -297,21 +485,100 @@ SplitOff11: <<
 	<<
 	DescDetail: 
 <<
-SplitOff12: <<
-	Package: qt5-%type_pkg[qt]-sceneparsers-plugins
-	Description: Qt5 positioning plugins (%type_pkg[qt])
+SplitOff22: <<
+	Package: qt5-%type_pkg[qt]-gltfsceneio-plugins
+	Description: Qt5 Transmission Format scene IO plugin (%type_pkg[qt])
+	Depends: <<
+		libassimp-shlibs,
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt5-%type_pkg[qt]/bin/qgltf
+		lib/qt5-%type_pkg[qt]/plugins/geometryloaders/libgltfgeometryloader.so
+		lib/qt5-%type_pkg[qt]/plugins/sceneparsers/libgltfsceneexport.so
+		lib/qt5-%type_pkg[qt]/plugins/sceneparsers/libgltfsceneimport.so
+	<<
+	DescDetail: 
+<<
+SplitOff23: <<
+	Package: qt5-%type_pkg[qt]-assimpsceneimport-plugins
+	Description: Qt5 Assimp scene import plugin (%type_pkg[qt])
+	Replaces: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
+	Conflicts: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
+	Depends: <<
+		libassimp-shlibs,
+		qt5-%type_pkg[qt]-qt3danimation-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt5-%type_pkg[qt]/plugins/sceneparsers/libassimpsceneimport.so
+	<<
+	DescDetail: 
+<<
+SplitOff24: <<
+	Package: qt5-%type_pkg[qt]-scene2d-plugins
+	Description: Qt5 Scene 2D plugin (%type_pkg[qt])
+	Depends: <<
+		libassimp-shlibs,
+		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dlogic-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3dquick-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
+		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt5-%type_pkg[qt]/plugins/renderplugins/libscene2d.so
+	<<
+	DescDetail: 
+<<
+SplitOff25: <<
+	Package: qt5-%type_pkg[qt]-defaultgeometryloader-plugins
+	Description: Qt5 default geometry loader plugin (%type_pkg[qt])
+	Replaces: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
+	Conflicts: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
 	Depends: <<
 		libassimp-shlibs,
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
 	<<
 	Files: <<
-		lib/qt5-%type_pkg[qt]/plugins/sceneparsers
+		lib/qt5-%type_pkg[qt]/plugins/geometryloaders/libdefaultgeometryloader.so
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qt3d-doc
+	Description: Qt5 3D documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qt3d{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

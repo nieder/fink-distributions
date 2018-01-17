@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-mac-translations-l10n
-Version: 5.7.1
+Version: 5.9.3
 Revision: 1
 Description: Qt5 translations (%type_pkg[qt])
 Type: qt (mac)
@@ -21,12 +21,12 @@ BuildDepends: <<
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1)
+	xcode (>= 7.3),
+	xcode.app (>= 7.3)
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qttranslations-opensource-src-%v.tar.xz
-Source-MD5: 1ca23bce3401399a99dedc1c58f7cd24
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttranslations-opensource-src-%v.tar.xz
+Source-MD5: d5cbeade5cb67eb57741158d206e407e
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -41,10 +41,9 @@ CompileScript: <<
 	#export LIBRARY_PATH=%p/lib
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	### need explicit PKG_CONFIG to detect dbus/sqlite3
-	#export PKG_CONFIG=%p/bin/pkg-config
-	qmake
-	make
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake $qmake_flags
+	/usr/bin/make -w
 <<
 
 InstallScript: <<
@@ -54,7 +53,7 @@ InstallScript: <<
 	make install INSTALL_ROOT=%d
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.GPL3-EXCEPT
 
 Homepage: http://qt-project.org
 DescDetail: <<

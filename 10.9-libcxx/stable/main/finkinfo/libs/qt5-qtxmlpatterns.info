@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtxmlpatterns
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -16,18 +16,20 @@ Depends: <<
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
-Source-MD5: 92c8212457fae1e2004cebc993a280ea
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
+Source-MD5: c8b47258f28be97a0d6ba897638f7014
 # Keep in case the tools SplitOff needs to be moved to its own package.
 #PatchScript: <<
 #	perl -pi -e 's|SUBDIRS \+\=|SUBDIRS -=|g' tools/tools.pro
@@ -44,8 +46,9 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake
-	make
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake $qmake_flags
+	/usr/bin/make -w
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -103,8 +106,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5XmlPatterns.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5XmlPatterns.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtXmlPatterns.framework/Versions/5/QtXmlPatterns       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5XmlPatterns.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtXmlPatterns module provides support for XPath, XQuery,

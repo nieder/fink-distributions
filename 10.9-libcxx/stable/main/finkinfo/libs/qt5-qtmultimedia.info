@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtmultimedia
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -19,18 +19,22 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtmultimedia-opensource-src-%v.tar.xz
-Source-MD5: 2b384ea22ae1dd7cec9ee40501ab2b45
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtmultimedia-opensource-src-%v.tar.xz
+Source-MD5: e266943ea03932d91823ab658f5d1507
+PatchFile: qt5-qtmultimedia.patch
+PatchFile-MD5: 57f1ea8040802e1166639166c0792e23
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -43,14 +47,16 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	if [ "%type_raw[qt]" == "x11" ]; then
-		qmake_flags="QMAKE_CXXFLAGS+=-I/opt/X11/include"
+		qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=-I/opt/X11/include"
 		# Turn off the avfoundation plugins until we can find a way to 
 		# not mix X11/GL (good) with OpenGL.framework (bad) on X11.
 		perl -pi -e 's|config_avfoundation|# $&|g' src/plugins/plugins.pro
 	fi
 	qmake $qmake_flags
-	make
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/multimedia docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -59,6 +65,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
@@ -76,7 +83,7 @@ InstallScript: <<
 	### Clean up .la, .prl files
 	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
 	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
-		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g     '
 
 	### Clean up .pc files
 	### fix '-framework ' -> '-Wl,-framework,'
@@ -94,7 +101,7 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.LGPL3 LICENSE.FDL
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtmultimedia-shlibs
@@ -109,8 +116,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Multimedia.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimedia.framework/Versions/5/QtMultimedia       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Multimedia.5.dylib      5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimedia.framework/Versions/5/QtMultimedia       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Multimedia.5.dylib      5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: The QtMultimedia module provides low-level multimedia functionality.
 <<
@@ -130,8 +137,8 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaQuick_p.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimediaQuick_p.framework/Versions/5/QtMultimediaQuick_p       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaQuick_p.5.dylib      5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimediaQuick_p.framework/Versions/5/QtMultimediaQuick_p       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaQuick_p.5.dylib      5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: 
 <<
@@ -151,8 +158,8 @@ SplitOff3: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaWidgets.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimediaWidgets.framework/Versions/5/QtMultimediaWidgets       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaWidgets.5.dylib      5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtMultimediaWidgets.framework/Versions/5/QtMultimediaWidgets       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5MultimediaWidgets.5.dylib      5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: 
 <<
@@ -208,6 +215,14 @@ SplitOff6: <<
 	<<
 	DescDetail: 
 <<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtmultimedia-doc
+	Description: Qt5 multimedia documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtmultimedia{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
 Homepage: http://qt-project.org
 DescDetail: <<
 Qt is a cross-platform application and UI framework with APIs for
@@ -246,6 +261,10 @@ In this case, it's still a good idea to set your PATH to contain
 DescPackaging: <<
 We follow Ubuntu's lead in using the separate tarballs and separate most
 of the packages the same way they do.
+
+Explicitly turn off supporting libraries that we don't currently have or
+don't want to use.
+If we build a new one, make sure install_name, etc are correct.
 <<
 <<
 # End Info4

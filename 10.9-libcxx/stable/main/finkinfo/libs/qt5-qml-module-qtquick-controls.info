@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qml-module-qtquick-controls
 # qtquick-layouts moved to qtdeclarative as of 5.7.0
-Version: 5.7.1
+Version: 5.9.3
 Revision: 1
 Description: Qt5 Quick Controls (%type_pkg[qt])
 Type: qt (mac)
@@ -23,16 +23,18 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1)
+	xcode (>= 7.3),
+	xcode.app (>= 7.3)
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtquickcontrols-opensource-src-%v.tar.xz
-Source-MD5: 3ee5bd8a0ac4d82b7ae1911a7052336d
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtquickcontrols-opensource-src-%v.tar.xz
+Source-MD5: b907722b486b2458bd7299758ad236c8
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -45,8 +47,12 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake
-	make
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake $qmake_flags
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/controls docs
+	/usr/bin/make -w -C src/dialogs docs
+	/usr/bin/make -w -C src/extras docs
 	fink-package-precedence --depfile-ext='\.d' .
 <<
 
@@ -55,6 +61,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 <<
 #AppBundles: 
 DocFiles: LICENSE.FDL LICENSE.GPLv2 LICENSE.LGPLv3 README
@@ -121,6 +128,30 @@ SplitOff4: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtQuick/Extras
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtquickcontrols-doc
+	Description: Qt5 quick controls documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickcontrols{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff41: <<
+	Package: qt5-%type_pkg[qt]-qtquickdialogs-doc
+	Description: Qt5 quick dialogs documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickdialogs{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff42: <<
+	Package: qt5-%type_pkg[qt]-qtquickextras-doc
+	Description: Qt5 quick extras documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickextras{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 
 Homepage: http://qt-project.org

@@ -1,36 +1,37 @@
 Info4: <<
-Package: qt5-%type_pkg[qt]-qtwebchannel
+Package: qt5-%type_pkg[qt]-qtgamepad
 Version: 5.9.3
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
 Maintainer: None <fink-devel@lists.sourceforge.net>
-### First version 5.3.1 by Hanspeter Niederstrasser
+### First version 5.9.0 by Hanspeter Niederstrasser
 ### Free to upgrade and modify parameters, but please discuss
 ### first on the fink-devel list
 
 Depends: <<
-	qt5-%type_pkg[qt]-qtwebchannel-shlibs (= %v-%r)
+	qt5-%type_pkg[qt]-qtgamepad-shlibs (= %v-%r)
 <<
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
-	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
 	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
+	libiconv-dev,
 	pkgconfig,
+	sdl2,
 	xcode (>= 7.3),
 	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebchannel-opensource-src-%v.tar.xz
-Source-MD5: 53f8362a3dbe3006cf971b84dca43fcf
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtgamepad-opensource-src-%v.tar.xz
+Source-MD5: 7ffb702b8d9b072f02e8b1711624e584
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -44,6 +45,7 @@ CompileScript: <<
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
 	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-I%p/include\""
 	qmake $qmake_flags
 	/usr/bin/make -w
 	/usr/bin/make -w docs
@@ -60,7 +62,7 @@ InstallScript: <<
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
 		### keep <space> at end of the 'want' list of .pc files
-		want="Qt5WebChannel.pc "
+		want="Qt5Gamepad.pc "
 		have=`/bin/ls -1 | tr '\n' ' '`
 	popd
 	if [ "$want" != "$have" ]; then
@@ -82,7 +84,7 @@ InstallScript: <<
 	
 	### Fix includedir to point into framework dir instead of non-existent include/QtFOO
 	### https://bugreports.qt.io/browse/QTBUG-35256
-	for QTLIB in WebChannel; do
+	for QTLIB in Gamepad; do
 		perl -pi -e "s|/Qt$QTLIB|/Qt$QTLIB.framework/Headers|g" %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
 		perl -pi -e 's|I\$\{includedir\}/Qt|F\$\{libdir\} -I\$\{libdir\}/Qt|g' %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
 	done
@@ -91,47 +93,63 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPL3 LICENSE.FDL
+DocFiles: LICENSE.LGPLv3
 
 SplitOff: <<
-	Package: qt5-%type_pkg[qt]-qtwebchannel-shlibs
-	Description: Qt WebChannel library (%type_pkg[qt])
+	Package: qt5-%type_pkg[qt]-qtgamepad-shlibs
+	Description: Qt Gamepad library (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1)
 	<<
 	Files: <<
-		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtWebChannel.framework/Versions/5/QtWebChannel
-		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5WebChannel.5*.dylib
+		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtGamepad.framework/Versions/5/QtGamepad
+		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5qtgamepad.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebChannel.framework/Versions/5/QtWebChannel       5.9.0 %n (>= 5.9.3-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebChannel.5.dylib      5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtGamepad.framework/Versions/5/QtGamepad       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Gamepad.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
-	DescDetail: The QtWebChannel module provides C++/QML to HTML/JS communication.
+	DescDetail: <<
+The QtGamepad module provides classes for displaying
+and creating Gamepad files.
+	<<
 <<
 SplitOff2: <<
-	Package: qt5-%type_pkg[qt]-qml-module-qtwebchannel
-	Description: Qt5 QtWebChannel QML module (%type_pkg[qt])
+	Package: qt5-%type_pkg[qt]-gamepad-plugins
+	Description: Qt5 Gamepad plugins (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgamepad-shlibs (>= %v-r),
+		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		sdl2-shlibs
+	<<
+	Files: <<
+		lib/qt5-%type_pkg[qt]/plugins
+	<<
+	DescDetail: 
+<<
+SplitOff3: <<
+	Package: qt5-%type_pkg[qt]-qml-module-qtgamepad
+	Description: Qt5 Gamepad QML module (%type_pkg[qt])
+	Depends: <<
+		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt5-%type_pkg[qt]-qtgamepad-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-%r)
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
 	<<
 	Files: <<
-		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtWebChannel
+		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtGamepad
 	<<
 	DescDetail: 
 <<
 SplitOff40: <<
-	Package: qt5-%type_pkg[qt]-qtwebchannel-doc
-	Description: Qt5 webchannel documentation (%type_pkg[qt])
+	Package: qt5-%type_pkg[qt]-qtgamepad-doc
+	Description: Qt5 Gamepad documentation (%type_pkg[qt])
 	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebchannel{.qch,}
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtgamepad{.qch,}
 	<<
 	DescDetail: Documentation for Qt.
 <<

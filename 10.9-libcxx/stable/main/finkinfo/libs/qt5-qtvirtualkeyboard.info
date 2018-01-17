@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtvirtualkeyboard
-Version: 5.7.1
+Version: 5.9.3
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -17,20 +17,22 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
 	qt5-%type_pkg[qt]-qtsvg (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	libhunspell,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtvirtualkeyboard-opensource-src-%v.tar.xz
-Source-MD5: 00d6170df3e5fc7204cfd827a8eb3eda
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtvirtualkeyboard-opensource-src-%v.tar.xz
+Source-MD5: b14eb8745d034d5f83eb33b320fbac63
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -48,11 +50,10 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	#if [ "%type_raw[qt]" == "mac" ]; then
-	#	qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
-	#fi
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	qmake $qmake_flags
-	make -w
+	/usr/bin/make -w
+	/usr/bin/make -w docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -61,6 +62,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 <<
 #AppBundles: 
 DocFiles: LICENSE.GPL3 README.md
@@ -97,6 +99,14 @@ SplitOff2: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtQuick/VirtualKeyboard
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtvirtualkeyboard-doc
+	Description: Qt5 virtual keyboard documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtvirtualkeyboard{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qttools
-Version: 5.7.1
-Revision: 5
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -11,7 +11,6 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 ### first on the fink-devel list
 
 Depends: <<
-	qt5-%type_pkg[qt]-qtclucene-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qtdesigner-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qtdesignercomponents-shlibs (= %v-%r),
 	qt5-%type_pkg[qt]-qthelp-shlibs (= %v-%r)
@@ -20,6 +19,7 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtdeclarative-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtlocation (>= %v-1),
 	#qt5-%type_pkg[qt]-qtmultimedia (>= %v-1),
 	#qt5-%type_pkg[qt]-qtsensors (>= %v-1),
@@ -28,13 +28,13 @@ BuildDepends: <<
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1)
+	xcode (>= 7.3),
+	xcode.app (>= 7.3)
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qttools-opensource-src-%v.tar.xz
-Source-MD5: 74b74b9e354368fea6635e2166a9c481
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
+Source-MD5: 7d798fe763012e7c4f5e4fd8149ef80f
 PatchFile: qt5-qttools.patch
 PatchFile-MD5: 738881bbb66a50277ad32c75761f732b
 PatchScript: <<
@@ -51,11 +51,12 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	if [ "%type_raw[qt]" == "mac" ]; then
-		qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
+		qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
 	fi
 	qmake $qmake_flags
-	make
+	/usr/bin/make -w
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -68,7 +69,7 @@ InstallScript: <<
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
 		### keep <space> at end of the 'want' list of .pc files
-		want="Qt5CLucene.pc Qt5Designer.pc Qt5DesignerComponents.pc Qt5Help.pc Qt5UiTools.pc "
+		want="Qt5Designer.pc Qt5DesignerComponents.pc Qt5Help.pc Qt5UiTools.pc "
 		have=`/bin/ls -1 | tr '\n' ' '`
 	popd
 	if [ "$want" != "$have" ]; then
@@ -81,7 +82,7 @@ InstallScript: <<
 	### Clean up .la, .prl files
 	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
 	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
-		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g     '
 
 	### Clean up .pc files
 	### fix '-framework ' -> '-Wl,-framework,'
@@ -90,7 +91,7 @@ InstallScript: <<
 	
 	### Fix includedir to point into framework dir instead of non-existent include/QtFOO
 	### https://bugreports.qt.io/browse/QTBUG-35256
-	for QTLIB in CLucene Designer DesignerComponents Help; do
+	for QTLIB in Designer DesignerComponents Help; do
 		perl -pi -e "s|/Qt$QTLIB|/Qt$QTLIB.framework/Headers|g" %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
 		perl -pi -e 's|I\$\{includedir\}/Qt|F\$\{libdir\} -I\$\{libdir\}/Qt|g' %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
 	done
@@ -108,22 +109,22 @@ InstallScript: <<
 	fi
 <<
 #AppBundles: 
-DocFiles: LGPL_EXCEPTION.txt LICENSE.FDL LICENSE.GPLv3 LICENSE.LGPLv21 LICENSE.LGPLv3
+DocFiles: LICENSE.FDL LICENSE.LGPL3 LICENSE.GPL3-EXCEPT
 
-SplitOff: <<
-	Package: qt5-%type_pkg[qt]-qtclucene-shlibs
-	Description: Qt5 Lucene library (%type_pkg[qt])
-	Depends: qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1)
-	Files: <<
-		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtCLucene.framework/Versions/5/QtCLucene
-		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5CLucene.5*.dylib
-	<<
-	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCLucene.framework/Versions/5/QtCLucene       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5CLucene.5.dylib       5.7.0 %n (>= 5.7.0-1)
-	<<
-	DescDetail: The QtClucene module provides support for full text search.
-<<
+#SplitOff: <<
+#	Package: qt5-%type_pkg[qt]-qtclucene-shlibs
+#	Description: Qt5 Lucene library (%type_pkg[qt])
+#	Depends: qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1)
+#	Files: <<
+#		( %type_pkg[qt] = mac ) lib/qt5-%type_pkg[qt]/lib/QtCLucene.framework/Versions/5/QtCLucene
+#		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5CLucene.5*.dylib
+#	<<
+#	Shlibs: <<
+#		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCLucene.framework/Versions/5/QtCLucene       5.9.0 %n (>= 5.9.3-1)
+#		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5CLucene.5.dylib       5.9.0 %n (>= 5.9.3-1)
+#	<<
+#	DescDetail: The QtClucene module provides support for full text search.
+#<<
 SplitOff2: <<
 	Package: qt5-%type_pkg[qt]-qtdesigner-shlibs
 	Description: Qt5 designer library (%type_pkg[qt])
@@ -138,8 +139,8 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Designer.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDesigner.framework/Versions/5/QtDesigner       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Designer.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDesigner.framework/Versions/5/QtDesigner       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Designer.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtDesigner module provides classes that allow you to
@@ -162,8 +163,8 @@ SplitOff3: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5DesignerComponents.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDesignerComponents.framework/Versions/5/QtDesignerComponents       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DesignerComponents.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDesignerComponents.framework/Versions/5/QtDesignerComponents       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DesignerComponents.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtDesigner module provides classes that allow you to
@@ -175,7 +176,6 @@ SplitOff4: <<
 	Package: qt5-%type_pkg[qt]-qthelp-shlibs
 	Description: Qt5 help library (%type_pkg[qt])
 	Depends: <<
-		qt5-%type_pkg[qt]-qtclucene-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
@@ -187,8 +187,8 @@ SplitOff4: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Help.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtHelp.framework/Versions/5/QtHelp       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Help.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtHelp.framework/Versions/5/QtHelp       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Help.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 The QtHelp module provides classes for integrating online

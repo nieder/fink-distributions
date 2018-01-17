@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtdatavis3d
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -21,14 +21,14 @@ BuildDepends: <<
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtdatavis3d-opensource-src-%v.tar.xz
-Source-MD5: c3431b6f1e65139d7a96cf6d147f1f2c
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdatavis3d-opensource-src-%v.tar.xz
+Source-MD5: db7eb7d4b216c1d6c30581353eb4a58b
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -41,11 +41,12 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	#if [ "%type_raw[qt]" == "mac" ]; then
-	#	qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
+	#	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
 	#fi
 	qmake $qmake_flags
-	make -w
+	/usr/bin/make -w 
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -103,8 +104,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5DataVisualization.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDataVisualization.framework/Versions/5/QtDataVisualization       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DataVisualization.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtDataVisualization.framework/Versions/5/QtDataVisualization       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5DataVisualization.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 DataVisualization module.

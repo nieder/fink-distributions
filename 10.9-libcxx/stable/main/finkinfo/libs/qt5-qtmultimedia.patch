@@ -1,0 +1,65 @@
+diff -ruN qtmultimedia-opensource-src-5.9.3-orig/src/multimedia/configure.json qtmultimedia-opensource-src-5.9.3/src/multimedia/configure.json
+--- qtmultimedia-opensource-src-5.9.3-orig/src/multimedia/configure.json	2017-11-08 08:04:46.000000000 -0600
++++ qtmultimedia-opensource-src-5.9.3/src/multimedia/configure.json	2018-01-14 21:59:20.000000000 -0600
+@@ -43,7 +43,7 @@
+             "test": "gstreamer",
+             "sources": [
+                 { "type": "pkgConfig",
+-                  "args": "gstreamer-0.10 gstreamer-base-0.10 gstreamer-audio-0.10 gstreamer-video-0.10 gstreamer-pbutils-0.10 gstreamer-interfaces-0.10" }
++                  "args": "gstreamer-0.10 gstreamer-base-0.10 gstreamer-audio-0.10 gstreamer-video-0.10 gstreamer-pbutils-0.10 gstreamer-interfaces-0.10", "condition": "!config.darwin" }
+             ]
+         },
+         "gstreamer_1_0": {
+@@ -52,7 +52,7 @@
+             "test": "gstreamer",
+             "sources": [
+                 { "type": "pkgConfig",
+-                  "args": "gstreamer-1.0 gstreamer-base-1.0 gstreamer-audio-1.0 gstreamer-video-1.0 gstreamer-pbutils-1.0" }
++                  "args": "gstreamer-1.0 gstreamer-base-1.0 gstreamer-audio-1.0 gstreamer-video-1.0 gstreamer-pbutils-1.0", "condition": "!config.darwin" }
+             ]
+         },
+         "gstreamer_app_0_10": {
+@@ -79,7 +79,7 @@
+             "test": "gstreamer_photography",
+             "use": "gstreamer_0_10",
+             "sources": [
+-                { "libs": "-lgstphotography-0.10" }
++                { "libs": "-lgstphotography-0.10", "condition": "!config.darwin" }
+             ]
+         },
+         "gstreamer_photography_1_0": {
+@@ -88,14 +88,14 @@
+             "test": "gstreamer_photography",
+             "use": "gstreamer_1_0",
+             "sources": [
+-                { "libs": "-lgstphotography-1.0" }
++                { "libs": "-lgstphotography-1.0", "condition": "!config.darwin" }
+             ]
+         },
+         "libresourceqt5": {
+             "label": "libresourceqt5",
+             "test": "resourcepolicy",
+             "sources": [
+-                { "type": "pkgConfig", "args": "libresourceqt5" }
++                { "type": "pkgConfig", "args": "libresourceqt5", "condition": "!config.darwin" }
+             ]
+         },
+         "mmrenderer": {
+@@ -109,7 +109,7 @@
+             "label": "OpenAL",
+             "test": "openal",
+             "sources": [
+-                { "type": "pkgConfig", "args": "openal" },
++                { "type": "pkgConfig", "args": "openal", "condition": "!config.darwin" },
+                 { "libs": "-lOpenAL32", "condition": "config.win32" },
+                 { "libs": "-framework OpenAL", "condition": "config.darwin" },
+                 { "libs": "-lopenal", "condition": "config.unix && !config.darwin" }
+@@ -119,7 +119,7 @@
+             "label": "PulseAudio >= 0.9.10",
+             "test": "pulseaudio",
+             "sources": [
+-                { "type": "pkgConfig", "args": "libpulse >= 0.9.10 libpulse-mainloop-glib" }
++                { "type": "pkgConfig", "args": "libpulse >= 0.9.10 libpulse-mainloop-glib", "condition": "!config.darwin" }
+             ]
+         },
+         "wmf": {

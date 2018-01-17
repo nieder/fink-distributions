@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtwebview
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -18,20 +18,22 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	qt5-%type_pkg[qt]-qtlocation (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtwebchannel (>= %v-1),
 	qt5-%type_pkg[qt]-qtwebengine (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtwebview-opensource-src-%v.tar.xz
-Source-MD5: 15c4a903f692ab4ea1ffb7c0ddb58e7a
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebview-opensource-src-%v.tar.xz
+Source-MD5: c746330d14d250ce2b622584f15d638c
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -44,8 +46,10 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake
-	make -w
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake $qmake_flags
+	/usr/bin/make -w
+	/usr/bin/make -w docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -54,6 +58,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
@@ -89,7 +94,7 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.FDL LICENSE.GPLv2 LICENSE.GPLv3 LICENSE.LGPLv3 dist/changes-5.7.0
+DocFiles: LICENSE.FDL LICENSE.GPLv2 LICENSE.GPLv3 LICENSE.LGPLv3 dist/changes-5.9.3
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtwebview-shlibs
@@ -110,8 +115,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5WebView.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebView.framework/Versions/5/QtWebView       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebView.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebView.framework/Versions/5/QtWebView       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebView.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 QtWebView module.
@@ -135,6 +140,14 @@ SplitOff2: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtwebview-doc
+	Description: Qt5 webview documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebview{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtcharts
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -17,6 +17,8 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
@@ -27,8 +29,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtcharts-opensource-src-%v.tar.xz
-Source-MD5: 05a6a003adf9102ecc86a5b3ca03fe6f
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtcharts-opensource-src-%v.tar.xz
+Source-MD5: 3e599de323542a355415681f440c38ec
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -41,11 +43,13 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	#if [ "%type_raw[qt]" == "mac" ]; then
-	#	qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
+	#	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
 	#fi
 	qmake $qmake_flags
-	make -w
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/charts docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -54,6 +58,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
@@ -104,8 +109,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Charts.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCharts.framework/Versions/5/QtCharts       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Charts.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtCharts.framework/Versions/5/QtCharts       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Charts.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Charts module.
@@ -127,6 +132,14 @@ SplitOff2: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtCharts
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtcharts-doc
+	Description: Qt5 charts documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtcharts{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

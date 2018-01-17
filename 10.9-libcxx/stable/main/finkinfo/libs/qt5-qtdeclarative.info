@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtdeclarative
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -25,14 +25,14 @@ BuildDepends: <<
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
-Source-MD5: e8940f4237bcedc67c8e9e753beb10d2
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
+Source-MD5: a08d2b93c8141b76a0d81b1051f09b7e
 #PatchFile: qt5-x11-qtdeclarative.patch
 #PatchFile-MD5: 1187406ea5748675b2de9b86d6ce14a3
 #PatchScript: <<
@@ -53,14 +53,15 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	if [ "%type_raw[qt]" == "mac" ]; then
-		qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\" QMAKE_LFLAGS+=\"-F%b/lib\""
+		qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\" QMAKE_LFLAGS+=\"-F%b/lib\""
 	fi
 	if [ "%type_raw[qt]" == "x11" ]; then
-		qmake_flags="INCLUDEPATH=/opt/X11/include"
+		qmake_flags="$qmake_flags INCLUDEPATH=/opt/X11/include"
 	fi
 	qmake $qmake_flags
-	/usr/bin/make
+	/usr/bin/make -w
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -112,7 +113,7 @@ InstallScript: <<
 	fi
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.LGPL3 LICENSE.GPL3-EXCEPT
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtqml-shlibs
@@ -127,8 +128,8 @@ SplitOff: <<
 		lib/qt5-%type_pkg[qt]/plugins/qmltooling/libqmldbg_tcp.so
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQml.framework/Versions/5/QtQml       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Qml.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQml.framework/Versions/5/QtQml       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Qml.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 QML module.
@@ -152,8 +153,8 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Quick.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuick.framework/Versions/5/QtQuick       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Quick.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuick.framework/Versions/5/QtQuick       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Quick.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Quick library.
@@ -174,8 +175,8 @@ SplitOff3: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5QuickParticles.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickParticles.framework/Versions/5/QtQuickParticles       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickParticles.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickParticles.framework/Versions/5/QtQuickParticles       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickParticles.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Quick particules module.
@@ -198,8 +199,8 @@ SplitOff4: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5QuickTest.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickTest.framework/Versions/5/QtQuickTest       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickTest.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickTest.framework/Versions/5/QtQuickTest       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickTest.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Quick Test library.
@@ -221,8 +222,8 @@ SplitOff5: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5QuickWidgets.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickWidgets.framework/Versions/5/QtQuickWidgets       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickWidgets.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtQuickWidgets.framework/Versions/5/QtQuickWidgets       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5QuickWidgets.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Quick Widgets library.

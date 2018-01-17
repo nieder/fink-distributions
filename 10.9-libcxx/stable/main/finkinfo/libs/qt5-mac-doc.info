@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-mac-doc
-Version: 5.7.1
+Version: 5.9.3
 Revision: 1
 Description: Qt5 documentation (%type_pkg[qt])
 Type: qt (mac)
@@ -10,88 +10,69 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 ### Free to upgrade and modify parameters, but please discuss
 ### first on the fink-devel list
 
-Depends: <<
+RuntimeDepends: <<
 	qt5-%type_pkg[qt]-qtbase-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qt3d-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtcanvas3d-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtcharts-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtconnectivity-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtgamepad-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtgraphicaleffects-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtimageformats-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtlocation-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtmacextras-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtmultimedia-doc (>= %v-1),
-#	qt5-%type_pkg[qt]-qtquickcontrols-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtpurchasing-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtquickcontrols-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtquickdialogs-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtquickextras-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtscript-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtscxml-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtsensors-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtserialbus-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtserialport-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtsvg-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qttools-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtvirtualkeyboard-doc (>= %v-1),
+	qt5-%type_pkg[qt]-qtwebchannel-doc (>= %v-1),
+#	qt5-%type_pkg[qt]-qtwebengine-doc (>= %v-1),
 #	qt5-%type_pkg[qt]-qtwebkit-doc (>= %v-1),
 #	qt5-%type_pkg[qt]-qtwebkit-examples-doc (>= %v-1),
-	qt5-%type_pkg[qt]-qtwebchannel-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtwebsockets-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtwebview-doc (>= %v-1),
 	qt5-%type_pkg[qt]-qtxmlpatterns-doc (>= %v-1)
 <<
-# qtserialbus-doc needs qtserialport
-# qtwebview-doc needs qtlocation, qtwebchannel, qtwebengine, qtwebview
+# qttools-dev-tools is needed to build the docs, so can't build the docs
+# at the same time as their parent package if qttools needs these 'base'
+# packages for itself.
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	qt5-%type_pkg[qt]-qtlocation (>= %v-1),
-	qt5-%type_pkg[qt]-qtserialport (>= %v-1),
+	qt5-%type_pkg[qt]-qtscript (>= %v-1),
 	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
 	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
-	qt5-%type_pkg[qt]-qtwebchannel (>= %v-1),
-	qt5-%type_pkg[qt]-qtwebengine (>= %v-1),
-	qt5-%type_pkg[qt]-qtwebview (>= %v-1),
+	qt5-%type_pkg[qt]-qtxmlpatterns-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1)
+	xcode (>= 7.3),
+	xcode.app (>= 7.3)
 <<
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtdoc-opensource-src-%v.tar.xz
-Source-MD5: 11ffb9eb8671f919272dacb8a67e6aba
-Source2: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtbase-opensource-src-%v.tar.xz
-Source2-MD5: f0809befe04160fbb73bbf38a06a2073
-Source3: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
-Source3-MD5: e8940f4237bcedc67c8e9e753beb10d2
-Source4: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtgraphicaleffects-opensource-src-%v.tar.xz
-Source4-MD5: 702114b75b6382a3417398b8035b02d2
-Source5: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtlocation-opensource-src-%v.tar.xz
-Source5-MD5: e08b12addd6b9d995fdf059c5c9e04b3
-Source6: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtmacextras-opensource-src-%v.tar.xz
-Source6-MD5: 4a050d84be4b4279103b8caeabf297b6
-Source7: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtmultimedia-opensource-src-%v.tar.xz
-Source7-MD5: 2b384ea22ae1dd7cec9ee40501ab2b45
-#Source8: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtquickcontrols-opensource-src-%v.tar.xz
-#Source8-MD5: 77717d2f252ae93d5e81fa35b3f0588f
-Source9: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtscript-opensource-src-%v.tar.xz
-Source9-MD5: cfe00eb9572f11bfdc832219b95c4fb8
-Source10: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtsensors-opensource-src-%v.tar.xz
-Source10-MD5: 6ee0851638bd0bc1ba5be5acc166919f
-Source11: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtserialbus-opensource-src-%v.tar.xz
-Source11-MD5: 962022877ce945f967f74a81aad2a83c
-Source12: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtserialport-opensource-src-%v.tar.xz
-Source12-MD5: 0169f558df728c0743fd344b3b2e8aa7
-Source13: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtsvg-opensource-src-%v.tar.xz
-Source13-MD5: 88b2f0b750fe128963087c21a5587b40
-Source14: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qttools-opensource-src-%v.tar.xz
-Source14-MD5: 74b74b9e354368fea6635e2166a9c481
-Source15: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtwebchannel-opensource-src-%v.tar.xz
-Source15-MD5: 766ecb0946bd2ed71e2f606217a48b8d
-Source16: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtwebsockets-opensource-src-%v.tar.xz
-Source16-MD5: c85d2352acf446f6fa3aa355c1221ca7
-Source17: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtwebview-opensource-src-%v.tar.xz
-Source17-MD5: 15c4a903f692ab4ea1ffb7c0ddb58e7a
-Source18: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
-Source18-MD5: 92c8212457fae1e2004cebc993a280ea
-Source19: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qt3d-opensource-src-%v.tar.xz
-Source19-MD5: 5ddde27e7fa6eb1e422a1f54d8a7cbeb
-Source20: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtcanvas3d-opensource-src-%v.tar.xz
-Source20-MD5: 3f6c69a6259c67698107f848addea1c1
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdoc-opensource-src-%v.tar.xz
+Source-MD5: 2aa2e2570b801174dbb2fa75b16380b1
+Source2: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtbase-opensource-src-%v.tar.xz
+Source2-MD5: 96f79e2350c7597632abade992fd3f8f
+Source3: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
+Source3-MD5: a08d2b93c8141b76a0d81b1051f09b7e
+Source4: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtscript-opensource-src-%v.tar.xz
+Source4-MD5: 9483867173552d9445f34f5acf05861f
+Source5: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
+Source5-MD5: 7d798fe763012e7c4f5e4fd8149ef80f
+Source6: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
+Source6-MD5: c8b47258f28be97a0d6ba897638f7014
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -104,9 +85,9 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake
-	make docs
-	for module in qtbase qt3d qtcanvas3d qtdeclarative qtgraphicaleffects qtlocation qtmacextras qtmultimedia qtscript qtsensors qtserialbus qtserialport qtsvg qttools qtwebchannel qtwebsockets qtwebview qtxmlpatterns; do
+	%p/lib/qt5-%type_pkg[qt]/bin/qmake
+	/usr/bin/make -w docs
+	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
 		echo "Building $module docs ..."
 		pushd %b/../$module-opensource-src-%v
 			if [ "x$module" == "xqtbase" ]; then
@@ -114,15 +95,17 @@ CompileScript: <<
 				ln -s $QT_FINK_PREFIX/bin/qdoc bin/qdoc
 				ln -s $QT_FINK_PREFIX/bin/rcc bin/rcc
 				ln -s $QT_FINK_PREFIX/bin/uic bin/uic
+				export qmake_flags="-- -confirm-license -opensource"
 			fi
 			if [ "x$module" == "xqttools" ]; then
 				install -m 0755 -d bin
 				ln -s $QT_FINK_PREFIX/bin/qdoc bin/qdoc
 				ln -s $QT_FINK_PREFIX/bin/qhelpgenerator bin/qhelpgenerator
 			fi
-			qmake
-			make docs
+			%p/lib/qt5-%type_pkg[qt]/bin/qmake $qmake_flags
+			/usr/bin/make docs
 		popd
+		unset qmake_flags
 		echo "Done with $module docs..."
 	done 
 <<
@@ -132,14 +115,11 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
-	install -m 0755 -d %i/lib/qt5-%type_pkg[qt]/share/doc/qt5
-	cp %b/doc/qtdoc.qch %i/lib/qt5-%type_pkg[qt]/share/doc/qt5
-	cp -r %b/doc/qtdoc %i/lib/qt5-%type_pkg[qt]/share/doc/qt5
-	for module in qtbase qt3d qtcanvas3d qtdeclarative qtgraphicaleffects qtlocation qtmacextras qtmultimedia qtscript qtsensors qtserialbus qtserialport qtsvg qttools qtwebchannel qtwebsockets qtwebview qtxmlpatterns; do
+	make install_docs INSTALL_ROOT=%d
+	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
 		echo "Installing $module docs ..."
 		pushd %b/../$module-opensource-src-%v
-			cp doc/*.qch %i/lib/qt5-%type_pkg[qt]/share/doc/qt5
-			cp -r doc/qt* %i/lib/qt5-%type_pkg[qt]/share/doc/qt5
+			make install_docs INSTALL_ROOT=%d 
 		popd
 		echo "Done installing docs for $module ..."
 	done
@@ -176,52 +156,6 @@ SplitOff2: <<
 	DescDetail: Documentation for Qt.
 <<
 SplitOff3: <<
-	Package: qt5-%type_pkg[qt]-qtgraphicaleffects-doc
-	Description: Qt5 GraphicalEffects documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtgraphicaleffects{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff4: <<
-	Package: qt5-%type_pkg[qt]-qtlocation-doc
-	Description: Qt5 Location documentation (%type_pkg[qt])
-	Replaces: qt5-%type_pkg[qt]-doc (<< 5.6.0)
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtlocation{.qch,}
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtpositioning{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff5: <<
-	Package: qt5-%type_pkg[qt]-qtmacextras-doc
-	Description: Qt5 MacExtras documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtmacextras{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff6: <<
-	Package: qt5-%type_pkg[qt]-qtmultimedia-doc
-	Description: Qt5 Multimedia documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtmultimedia{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-#SplitOff7: <<
-#	Package: qt5-%type_pkg[qt]-qtquickcontrols-doc
-#	Description: Qt5 QuickControls documentation (%type_pkg[qt])
-#	Replaces: qt5-%type_pkg[qt]-doc (<< 5.6.0)
-#	Files: <<
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickcontrols{.qch,}
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickdialogs{.qch,}
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquickextras{.qch,}
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtquicklayouts{.qch,}
-#	<<
-#	DescDetail: Documentation for Qt.
-#<<
-SplitOff8: <<
 	Package: qt5-%type_pkg[qt]-qtscript-doc
 	Description: Qt5 Script documentation (%type_pkg[qt])
 	Replaces: qt5-%type_pkg[qt]-doc (<< 5.6.0)
@@ -231,39 +165,7 @@ SplitOff8: <<
 	<<
 	DescDetail: Documentation for Qt.
 <<
-SplitOff9: <<
-	Package: qt5-%type_pkg[qt]-qtsensors-doc
-	Description: Qt5 Sensors documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtsensors{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff10: <<
-	Package: qt5-%type_pkg[qt]-qtserialbus-doc
-	Description: Qt5 SerialPus documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtserialbus{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff11: <<
-	Package: qt5-%type_pkg[qt]-qtserialport-doc
-	Description: Qt5 SerialPort documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtserialport{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff12: <<
-	Package: qt5-%type_pkg[qt]-qtsvg-doc
-	Description: Qt5 SVG documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtsvg{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff13: <<
+SplitOff4: <<
 	Package: qt5-%type_pkg[qt]-qttools-doc
 	Description: Qt5 Tools documentation (%type_pkg[qt])
 	Files: <<
@@ -275,41 +177,7 @@ SplitOff13: <<
 	<<
 	DescDetail: Documentation for Qt.
 <<
-SplitOff14: <<
-	Package: qt5-%type_pkg[qt]-qtwebchannel-doc
-	Description: Qt5 WebChannel documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebchannel{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-# webkit-doc needs to be built on a built source tree.
-#SplitOff14: <<
-#	Package: qt5-%type_pkg[qt]-qtwebkit-doc
-#	Description: Qt5 WebKit documentation (%type_pkg[qt])
-#	Files: <<
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebkit{.qch,}
-#		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebkitwidgets{.qch,}
-#	<<
-#	DescDetail: Documentation for Qt.
-#<<
-SplitOff15: <<
-	Package: qt5-%type_pkg[qt]-qtwebsockets-doc
-	Description: Qt5 WebSockets documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebsockets{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff16: <<
-	Package: qt5-%type_pkg[qt]-qtwebview-doc
-	Description: Qt5 WebView documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtwebview{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff17: <<
+SplitOff5: <<
 	Package: qt5-%type_pkg[qt]-qtxmlpatterns-doc
 	Description: Qt5 XML Patterns documentation (%type_pkg[qt])
 	Files: <<
@@ -317,24 +185,8 @@ SplitOff17: <<
 	<<
 	DescDetail: Documentation for Qt.
 <<
-SplitOff18: <<
-	Package: qt5-%type_pkg[qt]-qt3d-doc
-	Description: Qt5 3D documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qt3d{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
-SplitOff19: <<
-	Package: qt5-%type_pkg[qt]-qtcanvas3d-doc
-	Description: Qt5 Canvas3D documentation (%type_pkg[qt])
-	Files: <<
-		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtcanvas3d{.qch,}
-	<<
-	DescDetail: Documentation for Qt.
-<<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.FDL
 
 Homepage: http://qt-project.org
 DescDetail: <<
@@ -374,6 +226,15 @@ In this case, it's still a good idea to set your PATH to contain
 DescPackaging: <<
 We follow Ubuntu's lead in using the separate tarballs and separate most
 of the packages the same way they do.
+
+Only the base packages needed to build the base documentation are needed
+here as BuildDepends. All other packages that include docs build the
+docs at their own buildtime and are RuntimeDepends for the master
+qt5-%type_pkg[qt]-doc package.
+
+Other Qt5 packages building their own docs need to BDep on
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1)
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1)
 <<
 <<
 # End Info4

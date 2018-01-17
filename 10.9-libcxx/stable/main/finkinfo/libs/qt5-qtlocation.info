@@ -1,10 +1,11 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtlocation
-Version: 5.7.1
-Revision: 2
+# OPENSSL110 FTBFS
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
-License: LGPL
+License: LGPL/OpenSSL
 Maintainer: None <fink-devel@lists.sourceforge.net>
 ### First version 5.3.1 by Hanspeter Niederstrasser
 ### Free to upgrade and modify parameters, but please discuss
@@ -18,18 +19,27 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
+	libicu55-dev,
+	openssl100-dev,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtlocation-opensource-src-%v.tar.xz
-Source-MD5: e08b12addd6b9d995fdf059c5c9e04b3
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtlocation-opensource-src-%v.tar.xz
+Source-MD5: 4aecc9509da7ea60421bf5bb8bb8414b
+PatchFile: qt5-qtlocation.patch
+PatchFile-MD5: b4d36f0db0a1a55490beff1c1847c060
+PatchScript: <<
+	sed -e 's|@FINK_PREFIX@|%p|g' < %{PatchFile} | patch -p1
+<<
 
 UseMaxBuildJobs: false
 NoSetCPPFLAGS: true
@@ -42,11 +52,13 @@ CompileScript: <<
 	. %p/sbin/fink-buildenv-helper.sh
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	if [ "%type_raw[qt]" == "mac" ]; then
-		qmake_flags="QMAKE_CXXFLAGS+=\"-F%b/lib\""
+		qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
 	fi
 	qmake $qmake_flags
-	make
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/location docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -55,6 +67,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
@@ -108,8 +121,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Location.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtLocation.framework/Versions/5/QtLocation       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Location.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtLocation.framework/Versions/5/QtLocation       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Location.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Location module.
@@ -126,8 +139,8 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Positioning.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtPositioning.framework/Versions/5/QtPositioning       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Positioning.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtPositioning.framework/Versions/5/QtPositioning       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Positioning.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt5 Positioning module.
@@ -143,7 +156,9 @@ SplitOff3: <<
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
 		qt5-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+		qt5-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		libicu55-shlibs,
+		openssl100-shlibs
 	<<
 	Files: <<
 		lib/qt5-%type_pkg[qt]/plugins/geoservices
@@ -194,6 +209,14 @@ SplitOff6: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtPositioning
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtlocation-doc
+	Description: Qt5 location documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtlocation{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

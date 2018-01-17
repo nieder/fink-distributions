@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-image-format-plugins
-Version: 5.7.1
-Revision: 2
+Version: 5.9.3
+Revision: 1
 Description: Qt5 image format plugins (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -13,6 +13,8 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 Depends: <<
 	qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
 	qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	libjasper.1-shlibs,
 	libmng2-shlibs,
 	libtiff5-shlibs,
@@ -34,8 +36,8 @@ BuildDepends: <<
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtimageformats-opensource-src-%v.tar.xz
-Source-MD5: 7199aa8930cc284cff495723acf38732
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtimageformats-opensource-src-%v.tar.xz
+Source-MD5: b9054098b824f0b34d872f4a1a75da8c
 PatchFile: qt5-image-format-plugins.patch
 PatchFile-MD5: a2241ac507aa5fc6a3b1b51097d0522c
 PatchScript: <<
@@ -49,10 +51,15 @@ NoSetCXXFLAGS: true
 GCC: 4.0
 CompileScript: <<
 	#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
-	qmake
-	make
+	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake_flags="$qmake_flags QMAKE_LFLAGS+=\"-L%p/lib\""
+	qmake $qmake_flags
+	/usr/bin/make -w
+	/usr/bin/make -w docs
 	fink-package-precedence --depfile-ext='\.d' .
 <<
 
@@ -61,7 +68,18 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
+
+	# remove cmake files (for now)
 	rm -r %d$QT_FINK_PREFIX/lib
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtimageformats-doc
+	Description: Qt5 image formats documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtimageformats{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 #AppBundles: 
 DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt

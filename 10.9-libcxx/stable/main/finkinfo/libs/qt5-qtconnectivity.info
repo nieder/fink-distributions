@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtconnectivity
-Version: 5.7.1
-Revision: 3
+Version: 5.9.3
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -16,22 +16,24 @@ Depends: <<
 <<
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
-	qt5-%type_pkg[qt]-qtbase (>= %v-4),
+	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
 	pkgconfig,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/official_releases/qt/5.7/%v/submodules/qtconnectivity-opensource-src-%v.tar.xz
-Source-MD5: 032e5635bb2f3fbaecbe112d804d3f4b
-PatchFile: qt5-qtconnectivity.patch
-PatchFile-MD5: aee00a7f828a7c19d90435eac91a00c0
+Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtconnectivity-opensource-src-%v.tar.xz
+Source-MD5: a16c11a1e19f0bef1ddaad901e7f3b82
+#PatchFile: qt5-qtconnectivity.patch
+#PatchFile-MD5: aee00a7f828a7c19d90435eac91a00c0
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -43,8 +45,12 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake QMAKE_CXXFLAGS+="-F%b/lib"
-	make
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
+	qmake $qmake_flags
+	/usr/bin/make -w 
+	/usr/bin/make -w -C src/bluetooth docs
+	/usr/bin/make -w -C src/nfc docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
@@ -53,6 +59,7 @@ InstallScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 
 	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
 
 	### Make sure we have all the right packages (by probing .pc files)
 	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
@@ -88,7 +95,7 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.LGPL3 LICENSE.GPL3-EXCEPT
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtbluetooth-shlibs
@@ -102,8 +109,8 @@ SplitOff: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Bluetooth.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtBluetooth.framework/Versions/5/QtBluetooth       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Bluetooth.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtBluetooth.framework/Versions/5/QtBluetooth       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Bluetooth.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt Connectivity Bluetooth library.
@@ -120,8 +127,8 @@ SplitOff2: <<
 		( %type_pkg[qt] = x11 ) lib/qt5-%type_pkg[qt]/lib/libQt5Nfc.5*.dylib
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtNfc.framework/Versions/5/QtNfc       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Nfc.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtNfc.framework/Versions/5/QtNfc       5.9.0 %n (>= 5.9.3-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5Nfc.5.dylib       5.9.0 %n (>= 5.9.3-1)
 	<<
 	DescDetail: <<
 Qt Connectivity NFC module.
@@ -156,6 +163,15 @@ SplitOff4: <<
 		lib/qt5-%type_pkg[qt]/share/qt5/qml/QtNfc
 	<<
 	DescDetail: 
+<<
+SplitOff40: <<
+	Package: qt5-%type_pkg[qt]-qtconnectivity-doc
+	Description: Qt5 connectivity documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtbluetooth{.qch,}
+		lib/qt5-%type_pkg[qt]/share/doc/qt5/qtnfc{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
 <<
 Homepage: http://qt-project.org
 DescDetail: <<
