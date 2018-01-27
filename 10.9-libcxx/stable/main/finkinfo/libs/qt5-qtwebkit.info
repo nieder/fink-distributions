@@ -2,8 +2,8 @@ Info4: <<
 # QtWebkit has been deprecated and removed from upstream releases as of 5.6.
 # 5.6.0 and up are 'community releases'
 Package: qt5-%type_pkg[qt]-qtwebkit
-Version: 5.7.1
-Revision: 3
+Version: 5.9.0
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -36,16 +36,16 @@ BuildDepends: <<
 	libxslt,
 	pkgconfig,
 	sqlite3-dev,
-	xcode (>= 5.1.1),
-	xcode.app (>= 5.1.1),
+	xcode (>= 7.3),
+	xcode.app (>= 7.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: http://download.qt.io/community_releases/5.7/%v/qtwebkit-opensource-src-%v.tar.xz
-Source-MD5: 4fa8f47383ce36d59dcc36d701ce93cd
+Source: http://download.qt.io/community_releases/5.9/%v-final/qtwebkit-opensource-src-%v.tar.xz
+Source-MD5: 1fc0ed873cc9326b823a8a83126714f5
 PatchFile: qt5-qtwebkit.patch
-PatchFile-MD5: e6e207c3e6b4336917e630be4b17f54f
+PatchFile-MD5: da4659ee22e4ce94cdd1dd66bd20ed8d
 PatchScript: <<
 	#!/bin/sh -ex
 	sed -e "s|@FINK_PREFIX@|%p|g; s|@FINK_ICU_LIBS@|`pkg-config --libs-only-l icu-i18n`|" < %{PatchFile} | patch -p1
@@ -73,7 +73,7 @@ CompileScript: <<
 	mkdir build
 	pushd build
 		qmake $qmake_flags FLEX=/usr/bin/flex ..
-		make -w
+		/usr/bin/make -w
 	popd
 #	make docs
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
@@ -102,7 +102,7 @@ InstallScript: <<
 	### Clean up .la, .prl files
 	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
 	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
-		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g'
 
 	### Clean up .pc files
 	### fix '-framework ' -> '-Wl,-framework,'
@@ -162,10 +162,10 @@ SplitOff: <<
 		lib/qt5-%type_pkg[qt]/libexec/QtWebProcess
 	<<
 	Shlibs: <<
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebKit.framework/Versions/5/QtWebKit       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebKitWidgets.framework/Versions/5/QtWebKitWidgets       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebKit.5.dylib       5.7.0 %n (>= 5.7.0-1)
-		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebKitWidgets.5.dylib       5.7.0 %n (>= 5.7.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebKit.framework/Versions/5/QtWebKit       5.9.0 %n (>= 5.9.0-1)
+		( %type_pkg[qt] = mac ) %p/lib/qt5-%type_pkg[qt]/lib/QtWebKitWidgets.framework/Versions/5/QtWebKitWidgets       5.9.0 %n (>= 5.9.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebKit.5.dylib       5.9.0 %n (>= 5.9.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt5-%type_pkg[qt]/lib/libQt5WebKitWidgets.5.dylib       5.9.0 %n (>= 5.9.0-1)
 	<<
 	DocFiles: Source/WebKit/LICENSE:LICENSE.WebKit VERSION
 	DescDetail: <<

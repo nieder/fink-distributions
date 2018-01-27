@@ -13,37 +13,20 @@ diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Source/JavaScriptCore/API/JSBase.h
 diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Source/WTF/WTF.pri qtwebkit-opensource-src-5.7.1/Source/WTF/WTF.pri
 --- qtwebkit-opensource-src-5.7.1.orig/Source/WTF/WTF.pri	2016-10-14 15:28:46.000000000 -0400
 +++ qtwebkit-opensource-src-5.7.1/Source/WTF/WTF.pri	2018-01-10 00:01:07.000000000 -0500
-@@ -8,27 +8,9 @@
- # All external modules should include WTF headers by prefixing with "wtf" (#include <wtf/some/thing.h>).
+@@ -9,10 +9,9 @@
  INCLUDEPATH += $$PWD
- 
--mac {
+
+ mac {
 -    # Mac OS does ship libicu but not the associated header files.
 -    # Therefore WebKit provides adequate header files.
 -    INCLUDEPATH = $${ROOT_WEBKIT_DIR}/Source/WTF/icu $$INCLUDEPATH
 -    LIBS += -licucore
--} else:!use?(wchar_unicode): {
--    win32 {
--        CONFIG(static, static|shared) {
--            CONFIG(debug, debug|release) {
--                LIBS += -lsicuind -lsicuucd -lsicudtd
--            } else {
--                LIBS += -lsicuin -lsicuuc -lsicudt
--            }
--        } else {
--            LIBS += -licuin -licuuc -licudt
--        }
--    }
--    else:!contains(QT_CONFIG,no-pkg-config):packagesExist("icu-i18n"): PKGCONFIG *= icu-i18n
--    else:android: LIBS += -licui18n -licuuc
--    else: LIBS += -licui18n -licuuc -licudata
--}
-+# insert fink's libicu flags
-+INCLUDEPATH = $$INCLUDEPATH @FINK_PREFIX@/include
-+LIBS += @FINK_ICU_LIBS@
- 
- use?(GLIB) {
-     PKGCONFIG *= glib-2.0 gio-2.0
++    CONFIG += link_pkgconfig
++    PKGCONFIG *= icu-i18n
++    INCLUDEPATH = $$INCLUDEPATH @FINK_PREFIX@/include
+ } else:!use?(wchar_unicode): {
+     win32 {
+         CONFIG(static, static|shared) {
 diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Source/WebCore/Configurations/WebCore.xcconfig qtwebkit-opensource-src-5.7.1/Source/WebCore/Configurations/WebCore.xcconfig
 --- qtwebkit-opensource-src-5.7.1.orig/Source/WebCore/Configurations/WebCore.xcconfig	2016-10-14 15:28:46.000000000 -0400
 +++ qtwebkit-opensource-src-5.7.1/Source/WebCore/Configurations/WebCore.xcconfig	2018-01-09 23:38:13.000000000 -0500
@@ -70,6 +53,17 @@ diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Source/WebCore/Target.pri qtwebkit
  SOURCES += \
      Modules/geolocation/Coordinates.cpp \
      Modules/geolocation/Geolocation.cpp \
+@@ -2986,9 +2986,7 @@
+ }
+ 
+ mac {
+-    # For Mac we use the same SmartReplace implementation as the Apple port.
+-    SOURCES += editing/SmartReplaceCF.cpp
+-    INCLUDEPATH += $$PWD/icu
++    SOURCES += editing/SmartReplaceICU.cpp
+ } else {
+     SOURCES += editing/SmartReplaceICU.cpp
+ }
 diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Source/WebCore/WebCore.pri qtwebkit-opensource-src-5.7.1/Source/WebCore/WebCore.pri
 --- qtwebkit-opensource-src-5.7.1.orig/Source/WebCore/WebCore.pri	2016-10-14 15:28:46.000000000 -0400
 +++ qtwebkit-opensource-src-5.7.1/Source/WebCore/WebCore.pri	2018-01-09 23:38:13.000000000 -0500
@@ -104,7 +98,7 @@ diff -ruNp qtwebkit-opensource-src-5.7.1.orig/Tools/qmake/config.tests/icu/icu.p
 @@ -14,6 +14,7 @@ win32 {
          LIBS += -licuin -licuuc -licudt
      }
- } else:!contains(QT_CONFIG,no-pkg-config):packagesExist("icu-i18n") {
+ } else:qtConfig(pkg-config):packagesExist("icu-i18n") {
 +    CONFIG += link_pkgconfig
      PKGCONFIG += icu-i18n
  } else {
