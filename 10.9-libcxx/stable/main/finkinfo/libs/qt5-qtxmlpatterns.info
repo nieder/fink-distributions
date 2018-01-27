@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtxmlpatterns
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -16,8 +16,6 @@ Depends: <<
 BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
-	qt5-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
-	qt5-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
@@ -29,7 +27,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
-Source-MD5: c8b47258f28be97a0d6ba897638f7014
+Source-MD5: 0bea25b91532bacfc702912685ae7ff3
 # Keep in case the tools SplitOff needs to be moved to its own package.
 #PatchScript: <<
 #	perl -pi -e 's|SUBDIRS \+\=|SUBDIRS -=|g' tools/tools.pro

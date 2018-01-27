@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtwebview
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -33,7 +33,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebview-opensource-src-%v.tar.xz
-Source-MD5: c746330d14d250ce2b622584f15d638c
+Source-MD5: f65fa7693bb72e9979fc8250e26620a2
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -94,7 +94,7 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.FDL LICENSE.GPLv2 LICENSE.GPLv3 LICENSE.LGPLv3 dist/changes-5.9.3
+DocFiles: LICENSE.FDL LICENSE.GPLv2 LICENSE.GPLv3 LICENSE.LGPLv3 dist/changes-5.9.4
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtwebview-shlibs

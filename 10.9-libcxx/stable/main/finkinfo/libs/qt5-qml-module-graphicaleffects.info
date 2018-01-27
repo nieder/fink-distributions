@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qml-module-graphicaleffects
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Qt5 graphical effects QML module (%type_pkg[qt])
 Type: qt (mac)
@@ -32,7 +32,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtgraphicaleffects-opensource-src-%v.tar.xz
-Source-MD5: 3f07bca4af3536110a77f93cc3657af7
+Source-MD5: 5521d254ea0bf53c6b7735c38ede708e
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

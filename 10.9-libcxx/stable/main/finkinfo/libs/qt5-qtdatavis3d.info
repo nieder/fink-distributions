@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtdatavis3d
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -28,7 +28,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdatavis3d-opensource-src-%v.tar.xz
-Source-MD5: db7eb7d4b216c1d6c30581353eb4a58b
+Source-MD5: 48d33bc23bdbfd49725270c8d01d4f86
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

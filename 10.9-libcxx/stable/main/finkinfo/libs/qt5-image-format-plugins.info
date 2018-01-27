@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-image-format-plugins
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Qt5 image format plugins (%type_pkg[qt])
 Type: qt (mac)
@@ -37,7 +37,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtimageformats-opensource-src-%v.tar.xz
-Source-MD5: b9054098b824f0b34d872f4a1a75da8c
+Source-MD5: 70a6e3054ad335a7ae1f5d25b1fd94a9
 PatchFile: qt5-image-format-plugins.patch
 PatchFile-MD5: a2241ac507aa5fc6a3b1b51097d0522c
 PatchScript: <<

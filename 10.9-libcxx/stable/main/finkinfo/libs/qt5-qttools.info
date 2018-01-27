@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qttools
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -20,7 +20,7 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative-dev-tools (>= %v-1),
-	qt5-%type_pkg[qt]-qtlocation (>= %v-1),
+	#qt5-%type_pkg[qt]-qtlocation (>= %v-1),
 	#qt5-%type_pkg[qt]-qtmultimedia (>= %v-1),
 	#qt5-%type_pkg[qt]-qtsensors (>= %v-1),
 	#qt5-%type_pkg[qt]-qtwebkit (>= %v-1),
@@ -34,7 +34,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
-Source-MD5: 7d798fe763012e7c4f5e4fd8149ef80f
+Source-MD5: 976b18ff2d13daa65dbdf4178af337d7
 PatchFile: qt5-qttools.patch
 PatchFile-MD5: 738881bbb66a50277ad32c75761f732b
 PatchScript: <<

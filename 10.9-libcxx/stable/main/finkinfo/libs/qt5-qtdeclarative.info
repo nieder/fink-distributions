@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtdeclarative
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -32,7 +32,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
-Source-MD5: a08d2b93c8141b76a0d81b1051f09b7e
+Source-MD5: f8e9fce9814ffd31e95947fed57b5bc4
 #PatchFile: qt5-x11-qtdeclarative.patch
 #PatchFile-MD5: 1187406ea5748675b2de9b86d6ce14a3
 #PatchScript: <<

@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtconnectivity
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -31,7 +31,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtconnectivity-opensource-src-%v.tar.xz
-Source-MD5: a16c11a1e19f0bef1ddaad901e7f3b82
+Source-MD5: 9c8323ffc71d5d5b624fd630371d5562
 #PatchFile: qt5-qtconnectivity.patch
 #PatchFile-MD5: aee00a7f828a7c19d90435eac91a00c0
 

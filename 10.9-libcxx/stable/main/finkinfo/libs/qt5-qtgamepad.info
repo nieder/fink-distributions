@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtgamepad
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -31,7 +31,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtgamepad-opensource-src-%v.tar.xz
-Source-MD5: 7ffb702b8d9b072f02e8b1711624e584
+Source-MD5: 7689a12f0a2432bf03ed5bcb8833a546
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -120,7 +120,7 @@ SplitOff2: <<
 	Description: Qt5 Gamepad plugins (%type_pkg[qt])
 	Depends: <<
 		qt5-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		qt5-%type_pkg[qt]-qtgamepad-shlibs (>= %v-r),
+		qt5-%type_pkg[qt]-qtgamepad-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
 		sdl2-shlibs
 	<<

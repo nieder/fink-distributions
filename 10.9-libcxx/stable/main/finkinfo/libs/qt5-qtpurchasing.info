@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtpurchasing
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtpurchasing-opensource-src-%v.tar.xz
-Source-MD5: ba0f2c6f32893e56b23bd780732da4ed
+Source-MD5: 3b0df79bf738b56e7e8ed24b7696ddc8
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

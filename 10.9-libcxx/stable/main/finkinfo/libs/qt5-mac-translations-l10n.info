@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-mac-translations-l10n
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Qt5 translations (%type_pkg[qt])
 Type: qt (mac)
@@ -26,7 +26,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttranslations-opensource-src-%v.tar.xz
-Source-MD5: d5cbeade5cb67eb57741158d206e407e
+Source-MD5: c1a77eaa078c3eab5bdbae52e7f0ceb4
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

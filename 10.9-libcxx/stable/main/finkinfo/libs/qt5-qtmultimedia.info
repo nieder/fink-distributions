@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtmultimedia
-Version: 5.9.3
+Version: 5.9.4
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -32,7 +32,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtmultimedia-opensource-src-%v.tar.xz
-Source-MD5: e266943ea03932d91823ab658f5d1507
+Source-MD5: b451a49346341858d221c87bc8d1cc8f
 PatchFile: qt5-qtmultimedia.patch
 PatchFile-MD5: 57f1ea8040802e1166639166c0792e23
 
