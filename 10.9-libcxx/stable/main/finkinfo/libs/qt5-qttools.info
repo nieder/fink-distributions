@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qttools
 Version: 5.9.4
-Revision: 1
+Revision: 2
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -20,10 +20,6 @@ BuildDepends: <<
 	qt5-%type_pkg[qt]-qtbase (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	qt5-%type_pkg[qt]-qtdeclarative-dev-tools (>= %v-1),
-	#qt5-%type_pkg[qt]-qtlocation (>= %v-1),
-	#qt5-%type_pkg[qt]-qtmultimedia (>= %v-1),
-	#qt5-%type_pkg[qt]-qtsensors (>= %v-1),
-	#qt5-%type_pkg[qt]-qtwebkit (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
@@ -36,7 +32,7 @@ BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
 Source-MD5: 976b18ff2d13daa65dbdf4178af337d7
 PatchFile: qt5-qttools.patch
-PatchFile-MD5: 738881bbb66a50277ad32c75761f732b
+PatchFile-MD5: 3d0d1a0ae9f0b24aea54cd7a50c2fe88
 PatchScript: <<
 	sed -e 's|@FINK_PREFIX@|%p|g' -e 's|@QT_VERSION@|%v|g' < %{PatchFile} | patch -p1
 <<

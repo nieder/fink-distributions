@@ -13,3 +13,25 @@
  HEADERS += \
      lupdate.h \
      ../shared/simtexth.h
+diff -ruN qttools-opensource-src-5.9.4-orig/src/assistant/assistant/assistant.pro qttools-opensource-src-5.9.4/src/assistant/assistant/assistant.pro
+--- qttools-opensource-src-5.9.4-orig/src/assistant/assistant/assistant.pro	2018-01-10 23:19:33.000000000 -0600
++++ qttools-opensource-src-5.9.4/src/assistant/assistant/assistant.pro	2018-01-27 13:53:32.000000000 -0600
+@@ -1,8 +1,4 @@
+-qtHaveModule(webkitwidgets):!contains(QT_CONFIG, static) {
+-    BROWSER = qtwebkit
+-} else {
+     BROWSER = qtextbrowser
+-}
+ 
+ QT += widgets network help sql help
+ qtHaveModule(printsupport): QT += printsupport
+diff -ruN qttools-opensource-src-5.9.4-orig/src/designer/src/plugins/plugins.pro qttools-opensource-src-5.9.4/src/designer/src/plugins/plugins.pro
+--- qttools-opensource-src-5.9.4-orig/src/designer/src/plugins/plugins.pro	2018-01-10 23:19:33.000000000 -0600
++++ qttools-opensource-src-5.9.4/src/designer/src/plugins/plugins.pro	2018-01-27 13:53:52.000000000 -0600
+@@ -1,6 +1,5 @@
+ TEMPLATE = subdirs
+ 
+ # qtHaveModule(opengl): SUBDIRS += tools/view3d
+-qtHaveModule(webkitwidgets): SUBDIRS += qwebview
+ win32: qtHaveModule(axcontainer): SUBDIRS += activeqt
+ qtHaveModule(quickwidgets): SUBDIRS += qquickwidget
