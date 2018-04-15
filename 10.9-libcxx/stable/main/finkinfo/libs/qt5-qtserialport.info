@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtserialport
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -29,7 +29,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtserialport-opensource-src-%v.tar.xz
-Source-MD5: 7f36721fdfd77579a30ed11b55978458
+Source-MD5: e77fa4c99633ef031fd051981a4b6a81
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -90,7 +90,7 @@ InstallScript: <<
 	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
 <<
 #AppBundles: 
-DocFiles: LICENSE.LGPLv21 LICENSE.LGPLv3 LGPL_EXCEPTION.txt
+DocFiles: LICENSE.LGPL3 LGPL_EXCEPTION.txt
 
 SplitOff: <<
 	Package: qt5-%type_pkg[qt]-qtserialport-shlibs

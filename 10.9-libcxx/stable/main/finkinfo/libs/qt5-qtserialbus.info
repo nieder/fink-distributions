@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtserialbus
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtserialbus-opensource-src-%v.tar.xz
-Source-MD5: a1364b89d34fb03aaa1d1b7a46a2d537
+Source-MD5: 7dcc17d92d08c00e89c77bbf3eba9c7f
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

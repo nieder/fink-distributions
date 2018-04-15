@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qt3d
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -43,7 +43,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qt3d-opensource-src-%v.tar.xz
-Source-MD5: 3a35bf82f0d449979be085768e44a85b
+Source-MD5: 2f31ffad64ddbf8e9d2b2b17e040d42e
 
 PatchScript: <<
 	# qmake/pkg-config expects -I%p/include/assimp, but pkg uses #include <assimp/*.h>

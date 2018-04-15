@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qttools
-Version: 5.9.4
-Revision: 2
+Version: 5.9.5
+Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
-Source-MD5: 976b18ff2d13daa65dbdf4178af337d7
+Source-MD5: 671615cda2cf9fab59391d9ccbdd13a5
 PatchFile: qt5-qttools.patch
 PatchFile-MD5: 3d0d1a0ae9f0b24aea54cd7a50c2fe88
 PatchScript: <<

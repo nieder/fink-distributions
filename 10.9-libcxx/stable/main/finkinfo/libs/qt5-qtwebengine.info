@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtwebengine
 # OPENSSL110 FTBFS
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -38,7 +38,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebengine-opensource-src-%v.tar.xz
-Source-MD5: 1e73067670de4b93c4bd9aa0c6fe5911
+Source-MD5: 374ad79240ca9e56e182efc8a6629cc2
 
 PatchFile: qt5-qtwebengine.patch
 PatchFile-MD5: 271755b3cafa1bef0efac4c5bd5a0207

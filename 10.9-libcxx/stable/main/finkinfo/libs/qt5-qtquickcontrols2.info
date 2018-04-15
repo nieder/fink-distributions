@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtquickcontrols2
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Qt5 Quick Controls2 (%type_pkg[qt])
 Type: qt (mac)
@@ -28,7 +28,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtquickcontrols2-opensource-src-%v.tar.xz
-Source-MD5: 5639c60564a5daee45769255cec26d54
+Source-MD5: 4ddf71f3a490194df4adbe739d64a9c1
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

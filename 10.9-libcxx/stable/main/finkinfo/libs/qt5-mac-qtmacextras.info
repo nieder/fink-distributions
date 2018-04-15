@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-mac-qtmacextras
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -28,7 +28,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtmacextras-opensource-src-%v.tar.xz
-Source-MD5: 460966612b63f77624ad7e38fe5f2c25
+Source-MD5: ca8539cd51fb006d098393f87d8d50ed
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

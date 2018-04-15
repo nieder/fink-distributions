@@ -2,7 +2,7 @@ Info4: <<
 Package: qt5-%type_pkg[qt]-qtbase
 # OPENSSL110 FTBFS (see also qt4)
 # beware possible dlopen() vs linking
-Version: 5.9.4
+Version: 5.9.5
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -48,7 +48,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtbase-opensource-src-%v.tar.xz
-Source-MD5: 687ede5c399895308433b52d95b98fb1
+Source-MD5: 4679267d10a5489545e165e641ea4da5
 PatchFile: qt5-qtbase.patch
 PatchFile-MD5: 3f84c95f2de227213b820f88dacf25f9
 #PatchFile2: qt5-x11-qtbase.patch
