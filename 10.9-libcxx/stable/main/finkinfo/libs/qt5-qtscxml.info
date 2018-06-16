@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtscxml
-Version: 5.9.5
+Version: 5.9.6
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtscxml-opensource-src-%v.tar.xz
-Source-MD5: 9a4d0184b77a235ca57bc98999108603
+Source-MD5: 8b237ae9c51bda5b6e3e6b7bb9cb42dc
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

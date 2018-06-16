@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtwebview
-Version: 5.9.5
+Version: 5.9.6
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -33,7 +33,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebview-opensource-src-%v.tar.xz
-Source-MD5: c0d1338009508d55126b6ded4c869986
+Source-MD5: 0db8e7600d8f3561a3b8ec891ae2a90c
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

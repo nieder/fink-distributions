@@ -1,7 +1,7 @@
 Info4: <<
 # QtScript has been deprecated as of 5.6 and may be removed in future releases.
 Package: qt5-%type_pkg[qt]-qtscript
-Version: 5.9.5
+Version: 5.9.6
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -29,7 +29,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtscript-opensource-src-%v.tar.xz
-Source-MD5: 8f91a10bba95f55d9f5d52858456ffe8
+Source-MD5: 66274450eb4d0a083e7d4990a07a86a6
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
