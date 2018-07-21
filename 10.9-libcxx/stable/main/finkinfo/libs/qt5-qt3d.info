@@ -34,7 +34,7 @@ BuildDepends: <<
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
-	libassimp,
+	libassimp4-dev,
 	pkgconfig,
 	xcode (>= 7.3),
 	xcode.app (>= 7.3),
@@ -46,11 +46,7 @@ Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qt3d-openso
 Source-MD5: bd3b995bc4b79b7db5ec9941f6b446e0
 
 PatchScript: <<
-	# qmake/pkg-config expects -I%p/include/assimp, but pkg uses #include <assimp/*.h>
-	# https://bugreports.qt.io/browse/QTBUG-44582
-	echo "INCLUDEPATH += %p/include" >> config.tests/assimp/assimp.pro
-	echo "INCLUDEPATH += %p/include" >> src/plugins/sceneparsers/assimp/assimp.pro
-	echo "INCLUDEPATH += %p/include" >> tools/qgltf/qgltf.pro
+	echo "QMAKE_EXTRA_ARGS += -system-assimp" >> .qmake.conf
 <<
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -489,7 +485,7 @@ SplitOff22: <<
 	Package: qt5-%type_pkg[qt]-gltfsceneio-plugins
 	Description: Qt5 Transmission Format scene IO plugin (%type_pkg[qt])
 	Depends: <<
-		libassimp-shlibs,
+		libassimp4-shlibs,
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
@@ -514,7 +510,7 @@ SplitOff23: <<
 	Replaces: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
 	Conflicts: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
 	Depends: <<
-		libassimp-shlibs,
+		libassimp4-shlibs,
 		qt5-%type_pkg[qt]-qt3danimation-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
@@ -535,7 +531,7 @@ SplitOff24: <<
 	Package: qt5-%type_pkg[qt]-scene2d-plugins
 	Description: Qt5 Scene 2D plugin (%type_pkg[qt])
 	Depends: <<
-		libassimp-shlibs,
+		libassimp4-shlibs,
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dextras-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3dinput-shlibs (>= %v-%r),
@@ -559,7 +555,7 @@ SplitOff25: <<
 	Replaces: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
 	Conflicts: qt5-%type_pkg[qt]-sceneparsers-plugins (<< 5.9.3-1)
 	Depends: <<
-		libassimp-shlibs,
+		libassimp4-shlibs,
 		qt5-%type_pkg[qt]-qt3dcore-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qt3drender-shlibs (>= %v-%r),
 		qt5-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1),
