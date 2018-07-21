@@ -69,8 +69,13 @@ CompileScript: <<
 	export QT_FINK_PREFIX=%p/lib/qt5-%type_pkg[qt]
 	export PATH=${QT_FINK_PREFIX}/bin:$PATH
 	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
-	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
-	qmake $qmake_flags
+	#qmake_flags="QMAKE_CFLAGS+=\"-MD\""
+	echo "QMAKE_CFLAGS += -MD" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -system-opus" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -system-webp" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -no-pulseaudio" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -no-alsa" >> .qmake.conf
+	qmake
 	/usr/bin/make -w
 	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N --no-libs .
 <<
