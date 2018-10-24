@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qml-module-canvas3d
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Qt5 Canvas3D effects QML module (%type_pkg[qt])
 Type: qt (mac)
@@ -33,7 +33,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtcanvas3d-opensource-src-%v.tar.xz
-Source-MD5: 29574db1b3aa3e52d2aaffd5f28792d5
+Source-MD5: 5aea0b70fe28ebe1e147bc4dc180e0a6
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qt3d
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -43,7 +43,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qt3d-opensource-src-%v.tar.xz
-Source-MD5: bd3b995bc4b79b7db5ec9941f6b446e0
+Source-MD5: f733a3e4ef8ca1d72661d956059345d3
 
 PatchScript: <<
 	echo "QMAKE_EXTRA_ARGS += -system-assimp" >> .qmake.conf

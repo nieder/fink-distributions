@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtsvg
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -29,7 +29,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtsvg-opensource-src-%v.tar.xz
-Source-MD5: 0fc2165002cc66e0305f57bd5257ab9d
+Source-MD5: 5fe09722f81ff6af1f0c8927d43e3b83
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtwebchannel
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtwebchannel-opensource-src-%v.tar.xz
-Source-MD5: d8eb5d7307e0b2a39857f3cea0fea9cb
+Source-MD5: 4fca003027e45e6407dd3e0f4d010045
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

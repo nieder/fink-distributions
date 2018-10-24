@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-mac-doc
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Qt5 documentation (%type_pkg[qt])
 Type: qt (mac)
@@ -62,17 +62,17 @@ BuildDepends: <<
 	xcode.app (>= 7.3)
 <<
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdoc-opensource-src-%v.tar.xz
-Source-MD5: 3fd3db2fade7c84bf996611fbf0e6c98
+Source-MD5: 17123b533479907c9f78ed8839a57148
 Source2: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtbase-opensource-src-%v.tar.xz
-Source2-MD5: d6034bcb81e3652f5fbcf968e8616144
+Source2-MD5: dd54a5e8d28efc61e60bf85788bdda91
 Source3: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtdeclarative-opensource-src-%v.tar.xz
-Source3-MD5: 7034a621f519be19c4724de17d14f9f3
+Source3-MD5: dc5a134c00487f29bf1426b76d338cd1
 Source4: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtscript-opensource-src-%v.tar.xz
-Source4-MD5: 66274450eb4d0a083e7d4990a07a86a6
+Source4-MD5: e39c4a3298a1b739ff344db1a4be1b0b
 Source5: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qttools-opensource-src-%v.tar.xz
-Source5-MD5: e667f359597618d784aacbbe23c9ed89
+Source5-MD5: d105b17d057e07ea91d2649ae1e89a17
 Source6: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtxmlpatterns-opensource-src-%v.tar.xz
-Source6-MD5: 270567cd64cac6bb00bdb716e5d29246
+Source6-MD5: 56a9c1e0bc2bad4e85cdfb528c5bac6d
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

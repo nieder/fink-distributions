@@ -1,6 +1,6 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtsensors
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtsensors-opensource-src-%v.tar.xz
-Source-MD5: 73c7ce688e06bb99844fb63b49e3397f
+Source-MD5: 851e4c27fb4ccf24b085d304b6d077ea
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

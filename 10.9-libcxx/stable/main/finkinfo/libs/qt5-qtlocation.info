@@ -1,7 +1,7 @@
 Info4: <<
 Package: qt5-%type_pkg[qt]-qtlocation
 # OPENSSL110 FTBFS
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -34,7 +34,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtlocation-opensource-src-%v.tar.xz
-Source-MD5: 9b45016aea00ea7f28ef886967774cc7
+Source-MD5: d71fe49f3ddd6b07b8c4ee6e67ce97c1
 PatchFile: qt5-qtlocation.patch
 PatchFile-MD5: b4d36f0db0a1a55490beff1c1847c060
 PatchScript: <<

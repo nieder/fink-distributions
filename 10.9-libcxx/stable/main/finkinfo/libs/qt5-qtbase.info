@@ -2,7 +2,7 @@ Info4: <<
 Package: qt5-%type_pkg[qt]-qtbase
 # OPENSSL110 FTBFS (see also qt4)
 # beware possible dlopen() vs linking
-Version: 5.9.6
+Version: 5.9.7
 Revision: 1
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
@@ -30,7 +30,7 @@ BuildDepends: <<
 	dbus1.3-dev (>= 1.4.18-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
-	#fink-package-precedence,
+	fink-package-precedence,
 	fontconfig2-dev,
 	freetype219,
 	glib2-dev,
@@ -48,7 +48,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: http://download.qt.io/official_releases/qt/5.9/%v/submodules/qtbase-opensource-src-%v.tar.xz
-Source-MD5: d6034bcb81e3652f5fbcf968e8616144
+Source-MD5: dd54a5e8d28efc61e60bf85788bdda91
 PatchFile: qt5-qtbase.patch
 PatchFile-MD5: 3f84c95f2de227213b820f88dacf25f9
 #PatchFile2: qt5-x11-qtbase.patch
@@ -160,7 +160,7 @@ CompileScript: <<
 	/usr/bin/make -w
 	popd
 	# setting -MD or -MMD in CXXFLAGS causes the build to fail in src/sqldrivers
-	#fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
+	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
 <<
 
 InstallScript: <<
