@@ -1,0 +1,27 @@
+From 147452f856e8b0254c3c26c88531cd313e1db5fc Mon Sep 17 00:00:00 2001
+From: Jüri Valdmann <juri.valdmann@qt.io>
+Date: Mon, 18 Nov 2019 10:09:29 +0100
+Subject: [PATCH] Fix previous fix for new macOS deployment target
+
+The previous fix for the new target doesn't work with the old target.
+
+Task-number: QTBUG-79940
+Change-Id: I661c2c1ae5052a29c7a974363d4be1be3d0e4720
+Reviewed-by: Allan Sandfeld Jensen <allan.jensen@qt.io>
+---
+
+diff --git a/chromium/services/shape_detection/detection_utils_mac.h b/chromium/services/shape_detection/detection_utils_mac.h
+index 6a37ce3..cb1bd66 100644
+--- a/chromium/services/shape_detection/detection_utils_mac.h
++++ b/chromium/services/shape_detection/detection_utils_mac.h
+@@ -17,6 +16,10 @@
+ #include "third_party/skia/include/core/SkBitmap.h"
+ #include "ui/gfx/geometry/rect_f.h"
+ 
++#if defined(MAC_OS_X_VERSION_10_13) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_13
++#import <Vision/Vision.h>
++#endif
++
+ namespace shape_detection {
+ 
+ // Takes a ScopedSharedBufferHandle with dimensions and produces a new CIImage

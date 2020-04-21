@@ -1,0 +1,338 @@
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/config.tests/re2/re2.pro qtwebengine-everywhere-src-5.12.0/config.tests/re2/re2.pro
+--- qtwebengine-everywhere-src-5.12.0-orig/config.tests/re2/re2.pro	2018-11-26 22:10:38.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/config.tests/re2/re2.pro	2018-12-25 08:46:49.000000000 -0600
+@@ -1,3 +1,5 @@
+ SOURCES += re2.cpp
++INCLUDEPATH += @FINK_PREFIX@/include
+ LIBS += -lre2
++LIBS += -L@FINK_PREFIX@/lib
+ CONFIG -= qt
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/config.tests/snappy/snappy.pro qtwebengine-everywhere-src-5.12.0/config.tests/snappy/snappy.pro
+--- qtwebengine-everywhere-src-5.12.0-orig/config.tests/snappy/snappy.pro	2018-11-26 22:10:38.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/config.tests/snappy/snappy.pro	2018-12-25 05:50:44.000000000 -0600
+@@ -1,3 +1,6 @@
+-linux:SOURCES += snappy.cpp
++SOURCES += snappy.cpp
++INCLUDEPATH += @FINK_PREFIX@/include
+ LIBS += -lsnappy
++LIBS += -L@FINK_PREFIX@/lib
+ CONFIG -= qt
++
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn
+--- qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn	2018-12-26 22:22:21.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn	2018-12-27 04:48:21.000000000 -0600
+@@ -181,7 +181,7 @@
+     tool("cc") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$env_wrapper $cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
++      command = "$env_wrapper $cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/lib/ffmpeg-4.0/include -I@FINK_PREFIX@/include/opus -I@FINK_PREFIX@/include/freetype2 {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "CC {{output}}"
+       outputs = [
+@@ -192,7 +192,7 @@
+     tool("cxx") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$env_wrapper $cxx -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
++      command = "$env_wrapper $cxx -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/lib/ffmpeg-4.0/include -I@FINK_PREFIX@/include/opus -I@FINK_PREFIX@/include/freetype2 {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "CXX {{output}}"
+       outputs = [
+@@ -203,7 +203,7 @@
+     tool("asm") {
+       # For GCC we can just use the C compiler to compile assembly.
+       depfile = "{{output}}.d"
+-      command = "$env_wrapper $cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{asmflags}} -c {{source}} -o {{output}}"
++      command = "$env_wrapper $cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/lib/ffmpeg-4.0/include -I@FINK_PREFIX@/include/opus -I@FINK_PREFIX@/include/freetype2 {{include_dirs}} -I@FINK_PREFIX@/include {{asmflags}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "ASM {{output}}"
+       outputs = [
+@@ -214,7 +214,7 @@
+     tool("objc") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$env_wrapper $cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_objc}} -c {{source}} -o {{output}}"
++      command = "$env_wrapper $cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/lib/ffmpeg-4.0/include -I@FINK_PREFIX@/include/opus -I@FINK_PREFIX@/include/freetype2 {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_objc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "OBJC {{output}}"
+       outputs = [
+@@ -225,7 +225,7 @@
+     tool("objcxx") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$env_wrapper $cxx -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_objcc}} -c {{source}} -o {{output}}"
++      command = "$env_wrapper $cxx -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/lib/ffmpeg-4.0/include -I@FINK_PREFIX@/include/opus -I@FINK_PREFIX@/include/freetype2 {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_objcc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "OBJCXX {{output}}"
+       outputs = [
+@@ -280,7 +280,7 @@
+         link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
+       }
+       link_command += dsym_switch
+-      link_command += "{{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{libs}} {{solibs}}"
++      link_command += "-L@FINK_PREFIX@/lib/ffmpeg-4.0/lib -L@FINK_PREFIX@/lib {{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{libs}} {{solibs}}"
+ 
+       replace_command = "if ! cmp -s \"$temporary_tocname\" \"$tocname\"; then mv \"$temporary_tocname\" \"$tocname\""
+       extract_toc_command = "{ otool -l \"$dylib\" | grep LC_ID_DYLIB -A 5; nm -gP \"$dylib\" | cut -f1-2 -d' ' | grep -v U\$\$; true; }"
+@@ -326,7 +326,7 @@
+       rspfile = sofile + ".rsp"
+       pool = "//build/toolchain:link_pool($default_toolchain)"
+ 
+-      link_command = "$env_wrapper $linker_driver $ld -bundle {{ldflags}} -o \"$sofile\" -Wl,-filelist,\"$rspfile\""
++      link_command = "$env_wrapper $linker_driver $ld -bundle -L@FINK_PREFIX@/lib/ffmpeg-4.0/lib -L@FINK_PREFIX@/lib {{ldflags}} -o \"$sofile\" -Wl,-filelist,\"$rspfile\""
+       if (is_component_build) {
+         link_command += " -Wl,-install_name,@rpath/{{target_output_name}}{{output_extension}}"
+       }
+@@ -369,7 +369,7 @@
+       # do for command-line arguments. Thus any source names with spaces, or
+       # label names with spaces (which GN bases the output paths on) will be
+       # corrupted by this process. Don't use spaces for source files or labels.
+-      command = "$env_wrapper $linker_driver $ld $dsym_switch {{ldflags}} -o \"$outfile\" -Wl,-filelist,\"$rspfile\" {{solibs}} {{libs}}"
++      command = "$env_wrapper $linker_driver $ld $dsym_switch -L@FINK_PREFIX@/lib/ffmpeg-4.0/lib -L@FINK_PREFIX@/lib {{ldflags}} -o \"$outfile\" -Wl,-filelist,\"$rspfile\" {{solibs}} {{libs}}"
+       description = "LINK $outfile"
+       rspfile_content = "{{inputs_newline}}"
+       outputs = [
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin
+--- qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin	2018-11-13 12:25:11.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin	2018-12-25 08:01:42.000000000 -0600
+@@ -56,14 +56,14 @@
+ 
+ ## Compilation and dependency rules
+ %.$(STATIC_O): $(srcdir)/%.c
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(STATICCPPFLAGS) $(STATICCFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(STATICCPPFLAGS) $(STATICCFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ %.o: $(srcdir)/%.c
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(DYNAMICCPPFLAGS) $(DYNAMICCFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(DYNAMICCPPFLAGS) $(DYNAMICCFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ 
+ %.$(STATIC_O): $(srcdir)/%.cpp
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(STATICCPPFLAGS) $(STATICCXXFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(STATICCPPFLAGS) $(STATICCXXFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ %.o: $(srcdir)/%.cpp
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(DYNAMICCPPFLAGS) $(DYNAMICCXXFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(DYNAMICCPPFLAGS) $(DYNAMICCXXFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ 
+ ## Versioned libraries rules
+ 
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix
+--- qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix	2018-11-13 12:25:11.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix	2018-12-25 08:02:02.000000000 -0600
+@@ -3,7 +3,7 @@
+ DEFINES   += -D__STDC_LIMIT_MACROS
+ INCLUDES  := -I.
+ CXXFLAGS  := -W -Wall -g -std=c++11
+-ALL_CXXFLAGS := -MMD -MP $(DEFINES) $(INCLUDES) $(CXXFLAGS)
++ALL_CXXFLAGS := -MD -MP $(DEFINES) $(INCLUDES) $(CXXFLAGS)
+ LIBWEBMA  := libwebm.a
+ LIBWEBMSO := libwebm.so
+ WEBMOBJS  := mkvmuxer/mkvmuxer.o mkvmuxer/mkvmuxerutil.o mkvmuxer/mkvwriter.o
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk
+--- qtwebengine-everywhere-src-5.12.0-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2018-11-13 12:25:11.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2018-12-25 08:02:24.000000000 -0600
+@@ -10,7 +10,7 @@
+ 	$(SHAREDLIB_DIR)/$(LIBPREFIX)$(PROJECT_NAME).$(SHAREDLIBSUFFIXMAJORVER)
+ SHARED = -dynamiclib
+ SHARED += -current_version $(CURRENT_VERSION) -compatibility_version $(COMPATIBILITY_VERSION)
+-CFLAGS += -Wall -fPIC -MMD -MP
++CFLAGS += -Wall -fPIC -MD -MP
+ ifeq ($(ASM_ARCH), x86)
+ ASMFLAGS += -DPREFIX
+ ifeq ($(ARCH), x86_64)
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/core/configure.json qtwebengine-everywhere-src-5.12.0/src/core/configure.json
+--- qtwebengine-everywhere-src-5.12.0-orig/src/core/configure.json	2018-11-26 22:10:38.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/core/configure.json	2018-12-25 13:10:22.000000000 -0600
+@@ -334,7 +334,7 @@
+     "features": {
+         "webengine-system-fontconfig": {
+             "label": "fontconfig",
+-            "condition": "libs.webengine-fontconfig",
++            "condition": "config.macos && libs.webengine-fontconfig",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-dbus": {
+@@ -349,27 +349,27 @@
+         },
+         "webengine-system-libdrm": {
+             "label": "libdrm",
+-            "condition": "libs.webengine-libdrm",
++            "condition": "!config.macos && libs.webengine-libdrm",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-xcomposite": {
+             "label": "xcomposite",
+-            "condition": "libs.webengine-xcomposite",
++            "condition": "!config.macos && libs.webengine-xcomposite",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-xcursor": {
+             "label": "xcursor",
+-            "condition": "libs.webengine-xcursor",
++            "condition": "!config.macos && libs.webengine-xcursor",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-xi": {
+             "label": "xi",
+-            "condition": "libs.webengine-xi",
++            "condition": "!config.macos && libs.webengine-xi",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-xtst": {
+             "label": "xtst",
+-            "condition": "libs.webengine-xtst",
++            "condition": "!config.macos && libs.webengine-xtst",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-harfbuzz": {
+@@ -389,12 +389,12 @@
+         },
+         "webengine-system-zlib" : {
+             "label": "zlib",
+-            "condition": "config.unix && features.system-zlib && libs.webengine-zlib",
++            "condition": "config.macos && config.unix && features.system-zlib && libs.webengine-zlib",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-libevent" : {
+             "label": "libevent",
+-            "condition": "config.unix && libs.webengine-libevent",
++            "condition": "config.macos && config.unix && libs.webengine-libevent",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-jsoncpp" : {
+@@ -409,12 +409,12 @@
+         },
+         "webengine-system-png" : {
+             "label": "png",
+-            "condition": "config.unix && features.system-png && libs.webengine-png",
++            "condition": "config.macos && config.unix && features.system-png && libs.webengine-png",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-jpeg" : {
+             "label": "JPEG",
+-            "condition": "config.unix && features.system-jpeg && libs.webengine-jpeglib",
++            "condition": "!config.macos && config.unix && features.system-jpeg && libs.webengine-jpeglib",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-python2": {
+@@ -458,7 +458,7 @@
+         },
+         "webengine-alsa": {
+             "label": "Use ALSA",
+-            "condition": "config.unix && tests.webengine-alsa",
++            "condition": "!config.macos && config.unix && tests.webengine-alsa",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-v8-snapshot": {
+@@ -474,7 +474,7 @@
+         },
+         "webengine-system-khr" : {
+             "label": "khr",
+-            "condition": "config.unix && tests.webengine-khr",
++            "condition": "!config.macos && config.unix && tests.webengine-khr",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-libvpx" : {
+@@ -484,7 +484,7 @@
+         },
+         "webengine-system-snappy" : {
+             "label": "snappy",
+-            "condition": "config.unix && tests.webengine-snappy",
++            "condition": "config.macos && config.unix && tests.webengine-snappy",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-winversion" : {
+@@ -494,12 +494,12 @@
+         },
+         "webengine-geolocation": {
+             "label": "Geolocation",
+-            "condition": "module.positioning",
++            "condition": "config.macos && module.positioning",
+             "output": [ "publicFeature" ]
+         },
+         "webengine-pulseaudio": {
+             "label": "Use PulseAudio",
+-            "autoDetect": "config.unix",
++            "autoDetect": "config.macos && config.unix",
+             "condition": "libs.pulseaudio",
+             "output": [ "privateFeature" ]
+         },
+@@ -577,25 +577,25 @@
+         "webengine-system-libwebp": {
+             "label": "libwebp, libwebpmux and libwebpdemux",
+             "autoDetect": "config.unix",
+-            "condition": "libs.webengine-webp",
++            "condition": "config.macos && libs.webengine-webp",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-opus": {
+             "label": "opus",
+             "autoDetect": "config.unix",
+-            "condition": "libs.webengine-opus",
++            "condition": "config.macos && libs.webengine-opus",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-ffmpeg": {
+             "label": "ffmpeg",
+             "autoDetect": false,
+-            "condition": "libs.webengine-ffmpeg && features.webengine-system-opus && features.webengine-system-libwebp",
++            "condition": "config.macos && libs.webengine-ffmpeg && features.webengine-system-opus && features.webengine-system-libwebp",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-icu": {
+             "label": "icu",
+             "autoDetect": false,
+-            "condition": "libs.webengine-icu",
++            "condition": "config.macos && libs.webengine-icu",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-re2": {
+@@ -630,7 +630,7 @@
+         "webengine-system-lcms2" : {
+             "label": "lcms2",
+             "autoDetect": "features.webengine-printing-and-pdf",
+-            "condition": "config.unix && libs.webengine-lcms2",
++            "condition": "config.macos && config.unix && libs.webengine-lcms2",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-system-freetype" : {
+@@ -640,7 +640,7 @@
+         },
+         "webengine-system-x11" : {
+             "label": "x11",
+-            "condition": "config.unix && libs.webengine-x11",
++            "condition": "!config.macos && config.unix && libs.webengine-x11",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-sanitizer" : {
+@@ -652,7 +652,7 @@
+         "webengine-poppler-cpp": {
+             "label": "poppler-cpp",
+             "autoDetect": "config.unix",
+-            "condition": "libs.webengine-poppler-cpp",
++            "condition": "config.macos && libs.webengine-poppler-cpp",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-win-compiler64": {
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/core/core_module.pro qtwebengine-everywhere-src-5.12.0/src/core/core_module.pro
+--- qtwebengine-everywhere-src-5.12.0-orig/src/core/core_module.pro	2018-11-26 22:10:38.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/core/core_module.pro	2018-12-27 08:37:42.000000000 -0600
+@@ -30,6 +30,7 @@
+ for(archive, NINJA_ARCHIVES): RSP_A_CONTENT += $$archive
+ write_file($$RSP_ARCHIVE_FILE, RSP_A_CONTENT)
+ macos:LIBS_PRIVATE += -Wl,-filelist,$$shell_quote($$RSP_OBJECT_FILE)
++macos:LIBS_PRIVATE += -L@FINK_PREFIX@/lib/ffmpeg-4.0/lib -L@FINK_PREFIX@/lib -lavutil -lavformat -lavcodec -lfreetype -lopus -lpng16 -lz
+ linux:QMAKE_LFLAGS += @$${RSP_OBJECT_FILE}
+ # QTBUG-58710 add main rsp file on windows
+ win32:QMAKE_LFLAGS += @$${RSP_OBJECT_FILE}
+diff -ruN qtwebengine-everywhere-src-5.12.0-orig/src/tools/qwebengine_convert_dict/qwebengine_convert_dict.pro qtwebengine-everywhere-src-5.12.0/src/tools/qwebengine_convert_dict/qwebengine_convert_dict.pro
+--- qtwebengine-everywhere-src-5.12.0-orig/src/tools/qwebengine_convert_dict/qwebengine_convert_dict.pro	2018-11-26 22:10:38.000000000 -0600
++++ qtwebengine-everywhere-src-5.12.0/src/tools/qwebengine_convert_dict/qwebengine_convert_dict.pro	2018-12-27 08:40:16.000000000 -0600
+@@ -18,7 +18,7 @@
+     LIBS_PRIVATE = $$NINJA_ARCHIVES
+ }
+ LIBS_PRIVATE += $$NINJA_LIB_DIRS $$NINJA_LIBS
+-QMAKE_LFLAGS += $$NINJA_LFLAGS
++QMAKE_LFLAGS += -L@FINK_PREFIX@/lib $$NINJA_LFLAGS
+ POST_TARGETDEPS += $$NINJA_TARGETDEPS
+ 
+ # Fixme: -Werror=unused-parameter in core
