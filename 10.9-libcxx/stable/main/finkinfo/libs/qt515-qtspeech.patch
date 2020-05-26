@@ -1,0 +1,24 @@
+diff -ruN qtspeech-everywhere-src-5.15.0-rc2-orig/src/plugins/tts/tts.pro qtspeech-everywhere-src-5.15.0-rc2/src/plugins/tts/tts.pro
+--- qtspeech-everywhere-src-5.15.0-rc2-orig/src/plugins/tts/tts.pro	2020-04-22 03:13:06.000000000 -0500
++++ qtspeech-everywhere-src-5.15.0-rc2/src/plugins/tts/tts.pro	2020-05-24 16:56:05.000000000 -0500
+@@ -11,6 +11,8 @@
+ winrt: SUBDIRS += winrt
+ 
+ osx: SUBDIRS += osx
++osx: INCLUDEPATH += @FINK_PREFIX@/include
++
+ uikit: SUBDIRS += ios
+ 
+ android: SUBDIRS += android
+diff -ruN qtspeech-everywhere-src-5.15.0-rc2-orig/src/tts/configure.json qtspeech-everywhere-src-5.15.0-rc2/src/tts/configure.json
+--- qtspeech-everywhere-src-5.15.0-rc2-orig/src/tts/configure.json	2020-04-22 03:13:06.000000000 -0500
++++ qtspeech-everywhere-src-5.15.0-rc2/src/tts/configure.json	2020-05-24 16:55:21.000000000 -0500
+@@ -28,7 +28,7 @@
+                 ]
+             },
+             "sources": [
+-                "-lflite_cmu_us_kal16 -lflite_usenglish -lflite_cmulex -lflite"
++                "@FINK_PREFIX@/lib/libflite_cmu_us_kal16.a @FINK_PREFIX@/lib/libflite_usenglish.a @FINK_PREFIX@/lib/libflite_cmulex.a @FINK_PREFIX@/lib/libflite.a"
+             ]
+         },
+         "flite_alsa": {

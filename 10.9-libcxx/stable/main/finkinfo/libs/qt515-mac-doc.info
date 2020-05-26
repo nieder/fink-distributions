@@ -1,0 +1,250 @@
+Info4: <<
+Package: qt515-mac-doc
+Version: 5.15.0
+Revision: 1
+Distribution: 10.13, 10.14, 10.14.5, 10.15
+Description: Qt5 documentation (%type_pkg[qt])
+Type: qt (mac)
+License: GFDL
+Maintainer: None <fink-devel@lists.sourceforge.net>
+### First version 5.3.1 by Hanspeter Niederstrasser
+### Free to upgrade and modify parameters, but please discuss
+### first on the fink-devel list
+
+RuntimeDepends: <<
+	qt515-%type_pkg[qt]-qtbase-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qt3d-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtcanvas3d-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtcharts-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtconnectivity-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtgamepad-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtgraphicaleffects-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtimageformats-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtlocation-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtlottie-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtmacextras-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtmultimedia-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtnetworkauth-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtpurchasing-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtquick3d-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtquickcontrols-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtquickdialogs-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtquickextras-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtremoteobjects-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtscript-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtscxml-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtsensors-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtserialbus-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtserialport-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtspeech-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtsvg-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qttimeline-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qttools-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtvirtualkeyboard-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtwebchannel-doc (>= %v-1),
+#	qt515-%type_pkg[qt]-qtwebengine-doc (>= %v-1),
+#	qt515-%type_pkg[qt]-qtwebkit-doc (>= %v-1),
+#	qt515-%type_pkg[qt]-qtwebkit-examples-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtwebsockets-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtwebview-doc (>= %v-1),
+	qt515-%type_pkg[qt]-qtxmlpatterns-doc (>= %v-1)
+<<
+# qttools-dev-tools is needed to build the docs, so can't build the docs
+# at the same time as their parent package if qttools needs these 'base'
+# packages for itself.
+BuildDepends: <<
+	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
+	qt515-%type_pkg[qt]-qtbase (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt515-%type_pkg[qt]-qtlocation (>= %v-1),
+	qt515-%type_pkg[qt]-qtscript (>= %v-1),
+	qt515-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt515-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
+	qt515-%type_pkg[qt]-qtxmlpatterns-dev-tools (>= %v-1),
+	fink (>= 0.34.4-1),
+	fink-buildenv-modules,
+	pkgconfig,
+	xcode (>= 10.1),
+	xcode.app (>= 10.1)
+<<
+Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtdoc-everywhere-src-%v-rc2.tar.xz
+Source-MD5: ebb0f061a98216ef1bfac858f899bd13
+Source2: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtbase-everywhere-src-%v-rc2.tar.xz
+Source2-MD5: ff999d15a1b0c59c43c80ad31644dcd5
+Source3: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtdeclarative-everywhere-src-%v-rc2.tar.xz
+Source3-MD5: a34eca96e14e69356ed013ee89390c31
+Source4: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtscript-everywhere-src-%v-rc2.tar.xz
+Source4-MD5: 095288fd01a4a80dd36798ed10f3a4bf
+Source5: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qttools-everywhere-src-%v-rc2.tar.xz
+Source5-MD5: 0d6158a73c7712b9b2c4432fd4bc6e41
+Source6: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtxmlpatterns-everywhere-src-%v-rc2.tar.xz
+Source6-MD5: 3f4776938a793cdc7fc5f391c19d180c
+
+NoSetCPPFLAGS: true
+NoSetCFLAGS: true
+NoSetCXXFLAGS: true
+UseMaxBuildJobs: false
+GCC: 4.0
+CompileScript: <<
+	#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+	export PATH=${QT_FINK_PREFIX}/bin:$PATH
+	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	%p/lib/qt515-%type_pkg[qt]/bin/qmake
+	/usr/bin/make -w docs
+	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
+		echo "Building $module docs ..."
+		pushd %b/../$module-everywhere-src-%v-rc2
+			if [ "x$module" == "xqtbase" ]; then
+				install -m 0755 -d bin
+				ln -s $QT_FINK_PREFIX/bin/qdoc bin/qdoc
+				ln -s $QT_FINK_PREFIX/bin/rcc bin/rcc
+				ln -s $QT_FINK_PREFIX/bin/uic bin/uic
+				export qmake_flags="-- -confirm-license -opensource"
+			fi
+			if [ "x$module" == "xqttools" ]; then
+				install -m 0755 -d bin
+				ln -s $QT_FINK_PREFIX/bin/qdoc bin/qdoc
+				ln -s $QT_FINK_PREFIX/bin/qhelpgenerator bin/qhelpgenerator
+				ln -s $QT_FINK_PREFIX/bin/qtattributionsscanner bin/qtattributionsscanner
+			fi
+			%p/lib/qt515-%type_pkg[qt]/bin/qmake $qmake_flags
+			/usr/bin/make -w docs
+		popd
+		unset qmake_flags
+		echo "Done with $module docs..."
+	done
+<<
+
+InstallScript: <<
+	#!/bin/sh -ev
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+
+	make -w install INSTALL_ROOT=%d
+	make -w install_docs INSTALL_ROOT=%d
+	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
+		echo "Installing $module docs ..."
+		pushd %b/../$module-everywhere-src-%v-rc2
+			make -w install_docs INSTALL_ROOT=%d
+		popd
+		echo "Done installing docs for $module ..."
+	done
+
+<<
+SplitOff: <<
+	Package: qt515-%type_pkg[qt]-qtbase-doc
+	Description: Qt5 Base documentation (%type_pkg[qt])
+	#	lib/qt515-%type_pkg[qt]/share/doc/qt5/qdoc.qch
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qmake.qch
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtconcurrent{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtcore{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtdbus{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtgui{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtnetwork{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtopengl{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtplatformheaders{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtprintsupport{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtsql{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qttestlib{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtwidgets{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtxml{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff2: <<
+	Package: qt515-%type_pkg[qt]-qtdeclarative-doc
+	Description: Qt5 Declarative documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtqml{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtqmltest{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtquick{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff3: <<
+	Package: qt515-%type_pkg[qt]-qtscript-doc
+	Description: Qt5 Script documentation (%type_pkg[qt])
+	Replaces: qt515-%type_pkg[qt]-doc (<< 5.6.0)
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtscript{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtscripttools{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff4: <<
+	Package: qt515-%type_pkg[qt]-qttools-doc
+	Description: Qt5 Tools documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtassistant{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtdesigner{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtdistancefieldgenerator{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qthelp{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtlinguist{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtuitools{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+SplitOff5: <<
+	Package: qt515-%type_pkg[qt]-qtxmlpatterns-doc
+	Description: Qt5 XML Patterns documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtxmlpatterns{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+#AppBundles:
+DocFiles: LICENSE.FDL
+
+Homepage: http://qt-project.org
+DescDetail: <<
+Qt is a cross-platform application and UI framework with APIs for
+C++ programming and Qt Quick for rapid UI creation.
+
+* Intuitive class libraries
+* Easy to use and learn
+* Produce highly readable, easily maintainable and reusable code
+* High runtime performance and small footprint
+<<
+DescUsage: <<
+To compile against this Qt5, you need to make sure that
+"%p/lib/qt515-%type_pkg[qt]/bin" is first in your PATH and that qmake is
+present. Qmake is provided by "qt515-%type_pkg[qt]-qtbase-dev-tools".
+
+If you need to manually find the headers and libraries, you
+need your compiler flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or this:
+
+	-I%p/lib/qt515-%type_pkg[qt]/include
+
+...and your linker flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or
+
+	-L%p/lib/qt515-%type_pkg[qt]/lib
+
+In this case, it's still a good idea to set your PATH to contain
+"%p/lib/qt515-%type_pkg[qt]/bin" as well.
+<<
+DescPackaging: <<
+We follow Ubuntu's lead in using the separate tarballs and separate most
+of the packages the same way they do.
+
+Only the base packages needed to build the base documentation are needed
+here as BuildDepends. All other packages that include docs build the
+docs at their own buildtime and are RuntimeDepends for the master
+qt515-%type_pkg[qt]-doc package.
+
+Other Qt5 packages building their own docs need to BDep on
+	qt515-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1)
+	qt515-%type_pkg[qt]-qttools-dev-tools (>= %v-1)
+<<
+<<
+# End Info4

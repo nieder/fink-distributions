@@ -1,0 +1,244 @@
+Info4: <<
+Package: qt515-%type_pkg[qt]-qtquickcontrols2
+Version: 5.15.0
+Revision: 1
+Distribution: 10.13, 10.14, 10.14.5, 10.15
+Description: Qt5 Quick Controls2 (%type_pkg[qt])
+Type: qt (mac)
+License: LGPL3/GFDL
+Maintainer: None <fink-devel@lists.sourceforge.net>
+### First version 5.7.0 by Hanspeter Niederstrasser
+### Free to upgrade and modify parameters, but please discuss
+### first on the fink-devel list
+
+Depends: <<
+	qt515-%type_pkg[qt]-qtquickcontrols2-shlibs (>= %v-%r),
+	qt515-%type_pkg[qt]-qtquicktemplates2-shlibs (>= %v-%r)
+<<
+BuildDepends: <<
+	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
+	qt515-%type_pkg[qt]-qtbase (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	fink (>= 0.34.4-1),
+	fink-buildenv-modules,
+	fink-package-precedence,
+	pkgconfig,
+	xcode (>= 10.1),
+	xcode.app (>= 10.1)
+<<
+BuildConflicts: uuid, libevent1.4, libevent2, libev4
+BuildDependsOnly: true
+Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtquickcontrols2-everywhere-src-%v-rc2.tar.xz
+Source-MD5: 6c9f89050a0b05cff9b1c12d28c28a0a
+
+NoSetCPPFLAGS: true
+NoSetCFLAGS: true
+NoSetCXXFLAGS: true
+
+GCC: 4.0
+CompileScript: <<
+	#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+	export PATH=${QT_FINK_PREFIX}/bin:$PATH
+	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake $qmake_flags
+	/usr/bin/make -w
+	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
+<<
+
+InstallScript: <<
+	#!/bin/sh -ev
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+
+	make install INSTALL_ROOT=%d
+
+	### Make sure we have all the right packages (by probing .pc files)
+	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
+		### keep <space> at end of the 'want' list of .pc files
+		want="Qt5QuickControls2.pc Qt5QuickTemplates2.pc "
+		have=`/bin/ls -1 | tr '\n' ' '`
+	popd
+	if [ "$want" != "$have" ]; then
+		echo "Unexpected build results (mismatched list of .pc)"
+		echo "  want: '$want'"
+		echo "  have: '$have'"
+		exit 1
+	fi
+
+	### Clean up .la, .prl files
+	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+
+	### Clean up .pc files
+	### fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.pc | xargs \
+		perl -pi -e 's|-framework |-Wl,-framework,|g'
+
+	### Fix includedir to point into framework dir instead of non-existent include/QtFOO
+	### https://bugreports.qt.io/browse/QTBUG-35256
+	#for QTLIB in QuickControls2 QuickTemplates2; do
+	#	perl -pi -e "s|/Qt$QTLIB|/Qt$QTLIB.framework/Headers|g" %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#	perl -pi -e 's|I\$\{includedir\}/Qt|F\$\{libdir\} -I\$\{libdir\}/Qt|g' %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#done
+
+	### clean up Libs.private
+	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
+<<
+#AppBundles:
+DocFiles: LICENSE.FDL LICENSE.GPLv3 LICENSE.LGPLv3 README.md
+
+SplitOff: <<
+	Package: qt515-%type_pkg[qt]-qtquickcontrols2-shlibs
+	Description: Qt QuickControls2 library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qttest-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquicktemplates2-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtQuickControls2.framework/Versions/5/QtQuickControls2
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5QuickControls2.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtQuickControls2.framework/Versions/5/QtQuickControls2       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5QuickControls2.5.dylib       5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail: <<
+Qt5 Quick Controls2 library.
+	<<
+<<
+SplitOff2: <<
+	Package: qt515-%type_pkg[qt]-qtquicktemplates2-shlibs
+	Description: Qt QuickTemplates2 library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtQuickTemplates2.framework/Versions/5/QtQuickTemplates2
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5QuickTemplates2.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtQuickTemplates2.framework/Versions/5/QtQuickTemplates2       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5QuickTemplates2.5.dylib       5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail: <<
+Qt5 Quick Templates2 library.
+	<<
+<<
+SplitOff3: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtquick-templates2
+	Description: Qt5 QtQuick dialogs QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquicktemplates2-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtQuick/Templates.2
+	<<
+	DescDetail:
+<<
+SplitOff4: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qt-labs-calendar
+	Description: Qt5 QtQuick private cal QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquicktemplates2-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/Qt/labs/calendar
+	<<
+	DescDetail:
+<<
+SplitOff5: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qt-labs-platform
+	Description: Qt5 QtQuick private platform QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwidgets-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/Qt/labs/platform
+	<<
+	DescDetail:
+<<
+SplitOff6: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtquick-controls2
+	Description: Qt5 QtQuick private QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquickcontrols2-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtquicktemplates2-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtQuick/Controls.2
+	<<
+	DescDetail:
+<<
+Homepage: http://qt-project.org
+DescDetail: <<
+Qt is a cross-platform application and UI framework with APIs for
+C++ programming and Qt Quick for rapid UI creation.
+
+* Intuitive class libraries
+* Easy to use and learn
+* Produce highly readable, easily maintainable and reusable code
+* High runtime performance and small footprint
+<<
+DescUsage: <<
+To compile against this Qt5, you need to make sure that
+"%p/lib/qt515-%type_pkg[qt]/bin" is first in your PATH and that qmake is
+present. Qmake is provided by "qt515-%type_pkg[qt]-qtbase-dev-tools".
+
+If you need to manually find the headers and libraries, you
+need your compiler flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or this:
+
+	-I%p/lib/qt515-%type_pkg[qt]/include
+
+...and your linker flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or
+
+	-L%p/lib/qt515-%type_pkg[qt]/lib
+
+In this case, it's still a good idea to set your PATH to contain
+"%p/lib/qt515-%type_pkg[qt]/bin" as well.
+<<
+DescPackaging: <<
+We follow Ubuntu's lead in using the separate tarballs and separate most
+of the packages the same way they do.
+<<
+<<
+# End Info4

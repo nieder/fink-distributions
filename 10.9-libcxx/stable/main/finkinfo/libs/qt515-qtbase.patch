@@ -1,0 +1,76 @@
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/gcc-base-mac.conf qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/gcc-base-mac.conf
+--- qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/gcc-base-mac.conf	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/gcc-base-mac.conf	2020-05-23 21:36:22.000000000 -0500
+@@ -15,7 +15,7 @@
+ QMAKE_COMPILER_DEFINES += __APPLE__ __GNUC__=4 __APPLE_CC__
+ 
+ QMAKE_LFLAGS_SHLIB         += -single_module -dynamiclib
+-QMAKE_LFLAGS_PLUGIN        += $$QMAKE_LFLAGS_SHLIB
++QMAKE_LFLAGS_PLUGIN        += -bundle
+ QMAKE_LFLAGS_INCREMENTAL   += -undefined suppress -flat_namespace
+ QMAKE_LFLAGS_SONAME        += -install_name$${LITERAL_WHITESPACE}
+ QMAKE_LFLAGS_HEADERPAD     += -headerpad_max_install_names
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/mac.conf qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/mac.conf
+--- qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/mac.conf	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/mac.conf	2020-05-23 21:37:54.000000000 -0500
+@@ -12,8 +12,9 @@
+ 
+ include(unix.conf)
+ 
+-QMAKE_RESOURCE          = /Developer/Tools/Rez
++QMAKE_RESOURCE          = @XCODE_PREFIX@/Developer/Tools/Rez
+ QMAKE_EXTENSION_SHLIB   = dylib
++QMAKE_EXTENSION_PLUGIN  = so
+ QMAKE_LIBDIR            =
+ 
+ # sdk.prf will prefix the proper SDK sysroot
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/macx.conf qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/macx.conf
+--- qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/common/macx.conf	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/mkspecs/common/macx.conf	2020-05-23 21:38:43.000000000 -0500
+@@ -5,7 +5,7 @@
+ QMAKE_PLATFORM         += macos osx macx
+ QMAKE_MAC_SDK           = macosx
+ 
+-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
++QMAKE_MACOSX_DEPLOYMENT_TARGET = @MACOSX_DEPLOYMENT_TARGET@
+ QMAKE_APPLE_DEVICE_ARCHS = x86_64
+ 
+ # Should be 10.15, but as long as the CI builds with
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/features/mac/rez.prf qtbase-everywhere-src-5.15.0-rc2/mkspecs/features/mac/rez.prf
+--- qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/features/mac/rez.prf	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/mkspecs/features/mac/rez.prf	2020-05-23 21:40:59.000000000 -0500
+@@ -1,7 +1,7 @@
+ 
+ #global defaults
+ isEmpty(QMAKE_REZ) {
+-    QMAKE_REZ = /Developer/Tools/Rez
++    QMAKE_REZ = @XCODE_PREFIX@/Developer/Tools/Rez
+ }
+ isEmpty(REZ_DIR):REZ_DIR = .
+ isEmpty(QMAKE_EXT_REZ):QMAKE_EXT_REZ = .rsrc
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/features/qt_module.prf qtbase-everywhere-src-5.15.0-rc2/mkspecs/features/qt_module.prf
+--- qtbase-everywhere-src-5.15.0-rc2-orig/mkspecs/features/qt_module.prf	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/mkspecs/features/qt_module.prf	2020-05-23 21:42:35.000000000 -0500
+@@ -269,7 +269,7 @@
+ load(qt_targets)
+ 
+ # this builds on top of qt_common
+-!internal_module:if(unix|mingw):!if(darwin:debug_and_release:CONFIG(debug, debug|release)) {
++unix|mingw {
+     CONFIG += create_pc
+     QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+     host_build: \
+diff -ruN qtbase-everywhere-src-5.15.0-rc2-orig/src/plugins/platforms/cocoa/cocoa.pro qtbase-everywhere-src-5.15.0-rc2/src/plugins/platforms/cocoa/cocoa.pro
+--- qtbase-everywhere-src-5.15.0-rc2-orig/src/plugins/platforms/cocoa/cocoa.pro	2020-05-05 06:59:27.000000000 -0500
++++ qtbase-everywhere-src-5.15.0-rc2/src/plugins/platforms/cocoa/cocoa.pro	2020-05-23 21:45:02.000000000 -0500
+@@ -92,6 +92,10 @@
+ 
+ LIBS += -framework AppKit -framework CoreServices -framework Carbon -framework IOKit -framework QuartzCore -framework CoreVideo -framework Metal -framework IOSurface -lcups
+ 
++contains(QT_CONFIG, system-freetype) {
++    LIBS += -lfreetype
++}
++
+ DEFINES += QT_NO_FOREACH
+ 
+ QT += \
