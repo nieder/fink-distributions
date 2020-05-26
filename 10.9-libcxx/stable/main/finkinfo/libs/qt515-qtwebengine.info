@@ -1,0 +1,409 @@
+Info4: <<
+Package: qt515-%type_pkg[qt]-qtwebengine
+# QTBUG-77750
+Version: 5.15.0
+Revision: 1
+Distribution: 10.13, 10.14, 10.14.5, 10.15
+Description: Cross-Platform framework (%type_pkg[qt])
+Type: qt (mac)
+License: GPL/GFDL
+Maintainer: None <fink-devel@lists.sourceforge.net>
+### First version 5.3.1 by Hanspeter Niederstrasser
+### Free to upgrade and modify parameters, but please discuss
+### first on the fink-devel list
+
+Depends: <<
+	qt515-%type_pkg[qt]-qtwebengine-shlibs (= %v-%r),
+	qt515-%type_pkg[qt]-qtwebenginecore-shlibs (= %v-%r),
+	qt515-%type_pkg[qt]-qtwebenginewidgets-shlibs (= %v-%r)
+<<
+BuildDepends: <<
+	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
+	qt515-%type_pkg[qt]-qtbase (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt515-%type_pkg[qt]-qtlocation (>= %v-1),
+	qt515-%type_pkg[qt]-qttools (>= %v-1),
+	qt515-%type_pkg[qt]-qtwebchannel (>= %v-1),
+	fink (>= 0.34.4-1),
+	fink-buildenv-modules,
+	fink-package-precedence,
+	freetype219,
+	lcms2,
+	libavcodec58-4.0-dev,
+	libavformat58-4.0-dev,
+	libavutil56-4.0-dev,
+	libswresample3-4.0-dev,
+	libevent2.1,
+	libopus0-dev,
+	libre2,
+	libsnappy1-dev,
+	libwebp7,
+	ninja,
+	pkgconfig,
+	poppler0-cpp-dev,
+	python27,
+	openssl110-dev,
+	xcode (>= 8.3.3),
+	xcode.app (>= 8.3.3),
+	( %type_pkg[qt] = x11 ) x11-dev
+<<
+BuildConflicts: uuid, libevent1.4, libevent2, libev4
+BuildDependsOnly: true
+Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtwebengine-everywhere-src-%v-rc2.tar.xz
+Source-MD5: 0c7acd5ba035f71bc76306e15a1c3b2f
+Source2: http://www.opensource.apple.com/source/zlib/zlib-43/zlib/zlib.pc?txt
+Source2Rename: zlib.pc
+Source2-MD5: 51a7a85e92c0fafd00adbb1d0c1bc805
+Source2ExtractDir: pkgconfig
+
+PatchFile: qt515-qtwebengine.patch
+PatchFile-MD5: 297785bdd70b892cdc36d93b5b698d44
+# Debian's patch uses lcms2-2.6/include. Switch to lcms/include to match tree.
+#PatchFile2: qt515-qtwebengine-system-lcms2.patch
+#PatchFile2-MD5: a3c28ca3fd41190805ee36777f6af3bf
+
+PatchScript: <<
+#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
+	sed -e 's|@FINK_ARCH@|%m|g' \
+		-e 's|@FINK_PREFIX@|%p|g' \
+		-e "s|@MACOSX_DEPLOYMENT_TARGET@|$MACOSX_DEPLOYMENT_TARGET|g" \
+		-e "s|@SDK_PATH@|$SDK_PATH|g" \
+		-e 's|@PATH_TO_PG_CONFIG@|/usr/bin|g' \
+		-e "s|@QT_PLUGINS_DIR@|$QT_FINK_PREFIX/plugins|g" < %{PatchFile} | patch -p1
+	#patch -p1 < %{PatchFile2}
+	# The following don't work when using system-libs:
+	# libwebp: no rule to make header
+	# re2: no rule to make header
+	# snappy: no rule to make header
+	# yasm: asm/SaveRegisters_x86.o is not an object file (is built as elf64!)
+	# zlib: no rule to make header
+	# Freetype/fontconfig: newer than what we have
+	# System-libs not working on 5.15.0rc2 (missing symbols in linking)
+	# ffmpeg
+	# freetype
+	# libpng
+	# opus
+	# zlib
+	pushd src/3rdparty/chromium/build/linux/unbundle
+		/usr/bin/python2.7 replace_gn_files.py --system-libraries flac libevent
+	popd
+	perl -pi -e 's|-MMD|-MD|g' \
+		src/3rdparty/chromium/build/toolchain/gcc_toolchain.gni \
+		src/3rdparty/chromium/third_party/ffmpeg/configure \
+		src/3rdparty/chromium/third_party/openscreen/src/build/toolchain/mac/BUILD.gn \
+		src/3rdparty/gn/build/build_mac.ninja.template \
+		src/3rdparty/ninja/configure.py
+<<
+NoSetCPPFLAGS: true
+NoSetCFLAGS: true
+NoSetCXXFLAGS: true
+
+GCC: 4.0
+CompileScript: <<
+	#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+	export PATH=${QT_FINK_PREFIX}/bin:$PATH
+	# use PKG_CONFIG_LIBDIR to avoid pulling in X11
+	export PKG_CONFIG_LIBDIR=`pwd`/../pkgconfig:%p/lib/glib-2.0/pkgconfig-strict:%p/lib/pkgconfig
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	#echo "QMAKE_CXXFLAGS += -MD" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -system-opus" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -system-webp" >> .qmake.conf
+	#echo "QMAKE_EXTRA_ARGS += -system-webengine-ffmpeg" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -no-pulseaudio" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -no-alsa" >> .qmake.conf
+	# for finding -llcms2
+	#echo "QMAKE_LIBDIR += %p/lib" >> .qmake.conf
+	#echo "QMAKE_LFLAGS += -L%p/lib/ffmpeg-4.0/lib" >> .qmake.conf
+	#echo "QMAKE_LFLAGS += -L%p/lib" >> .qmake.conf
+
+	# native-spellchecker gets rid of qwebengine_convert_dict in bin
+	#echo "QMAKE_EXTRA_ARGS += -webengine-native-spellchecker" >> .qmake.conf
+	qmake $qmake_flags
+	/usr/bin/make -w
+	
+	# bad file breaks f-p-p
+	rm src/3rdparty/chromium/third_party/spirv-headers/src/include/spirv/unified1/spv.d
+	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N --no-libs .
+<<
+
+InstallScript: <<
+	#!/bin/sh -ev
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+
+	make install INSTALL_ROOT=%d
+
+	### Make sure we have all the right packages (by probing .pc files)
+	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
+		### keep <space> at end of the 'want' list of .pc files
+		want="Qt5Pdf.pc Qt5PdfWidgets.pc Qt5WebEngine.pc Qt5WebEngineCore.pc Qt5WebEngineWidgets.pc "
+		have=`/bin/ls -1 | tr '\n' ' '`
+	popd
+	if [ "$want" != "$have" ]; then
+		echo "Unexpected build results (mismatched list of .pc)"
+		echo "  want: '$want'"
+		echo "  have: '$have'"
+		exit 1
+	fi
+
+	### Clean up .la, .prl files
+	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+
+	### Clean up .pc files
+	### fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.pc | xargs \
+		perl -pi -e 's|-framework |-Wl,-framework,|g'
+
+	### Fix includedir to point into framework dir instead of non-existent include/QtFOO
+	### https://bugreports.qt.io/browse/QTBUG-35256
+	#for QTLIB in WebEngine WebEngineCore WebEngineWidgets; do
+	#	perl -pi -e "s|/Qt$QTLIB|/Qt$QTLIB.framework/Headers|g" %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#	perl -pi -e 's|I\$\{includedir\}/Qt|F\$\{libdir\} -I\$\{libdir\}/Qt|g' %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#done
+
+	### clean up Libs.private
+	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
+<<
+#AppBundles:
+DocFiles: LICENSE.GPL2 LICENSE.GPL3 LICENSE.GPL3-EXCEPT LICENSE.GPLv3 LICENSE.LGPL3 dist/changes-%v
+
+SplitOff: <<
+	Package: qt515-%type_pkg[qt]-qtwebenginecore-shlibs
+	Description: Qt WebEngineCore library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
+		lcms2-shlibs,
+		libevent2.1-shlibs,
+		freetype219-shlibs,
+		libopus0-shlibs,
+		libpng16-shlibs
+	<<
+	Conflicts: qt515-%type_pkg[qt]-qtwebengine (<< 5.9.3-1)
+	Replaces: qt515-%type_pkg[qt]-qtwebengine (<< 5.9.3-1)
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtWebEngineCore.framework/Versions/5/QtWebEngineCore
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5WebEngineCore.5*.dylib
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtWebEngineCore.framework/Versions/5/Helpers/QtWebEngineProcess.app
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libexec/QtWebEngineProcess
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtWebEngineCore.framework/Versions/5/QtWebEngineCore       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5WebEngineCore.5.dylib      5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail:
+<<
+SplitOff2: <<
+	Package: qt515-%type_pkg[qt]-qtwebengine-shlibs
+	Description: Qt WebEngineCore library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtWebEngine.framework/Versions/5/QtWebEngine
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5WebEngine.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtWebEngine.framework/Versions/5/QtWebEngine       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5WebEngine.5.dylib      5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail:
+<<
+SplitOff3: <<
+	Package: qt515-%type_pkg[qt]-qtwebenginewidgets-shlibs
+	Description: Qt WebEngineCore library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtprintsupport-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquickwidgets-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebengine-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtwidgets-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtWebEngineWidgets.framework/Versions/5/QtWebEngineWidgets
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5WebEngineWidgets.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtWebEngineWidgets.framework/Versions/5/QtWebEngineWidgets       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5WebEngineWidgets.5.dylib      5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail:
+<<
+SplitOff4: <<
+	Package: qt515-%type_pkg[qt]-qtpdf-shlibs
+	Description: Qt PDF library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtPdf.framework/Versions/5/QtPdf
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5Pdf.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtPdf.framework/Versions/5/QtPdf       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5Pdf.5.dylib      5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail:
+<<
+SplitOff5: <<
+	Package: qt515-%type_pkg[qt]-qtpdfwidgets-shlibs
+	Description: Qt PDF Widgets library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpdf-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtwidgets-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtPdfWidgets.framework/Versions/5/QtPdfWidgets
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5PdfWidgets.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtPdfWidgets.framework/Versions/5/QtPdfWidgets      5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5PdfWidgets.5.dylib      5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail:
+<<
+SplitOff10: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtwebengine
+	Description: Qt5 QtWebEngine QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebengine-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtWebEngine
+	<<
+	DescDetail:
+<<
+SplitOff20: <<
+	Package: qt515-%type_pkg[qt]-webengine-designer-plugins
+	Description: Qt5 WebEngine designer plugins (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtdesigner-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtprintsupport-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwebenginewidgets-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtwidgets-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtxml-shlibs (>= %v-1)
+	<<
+	Conflicts: <<
+		# Designer.app can't run with the plugin from an earlier %v Qt lib
+		qt515-%type_pkg[qt]-designer (>> %v-9999)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/plugins/designer
+	<<
+	DescDetail:
+<<
+SplitOff21: <<
+	Package: qt515-%type_pkg[qt]-webengine-image-format-plugins
+	Description: Qt5 WebEngine designer plugins (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtpdf-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/plugins/imageformats
+	<<
+	DescDetail:
+<<
+SplitOff30: <<
+	Package: qt515-%type_pkg[qt]-webengine-dev-tools
+	Description: Qt5 WebEngine dev tools (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		libevent2.1-shlibs
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/bin
+	<<
+	DescDetail:
+<<
+Homepage: http://qt-project.org
+DescDetail: <<
+Qt is a cross-platform application and UI framework with APIs for
+C++ programming and Qt Quick for rapid UI creation.
+
+* Intuitive class libraries
+* Easy to use and learn
+* Produce highly readable, easily maintainable and reusable code
+* High runtime performance and small footprint
+<<
+DescUsage: <<
+To compile against this Qt5, you need to make sure that
+"%p/lib/qt515-%type_pkg[qt]/bin" is first in your PATH and that qmake is
+present. Qmake is provided by "qt515-%type_pkg[qt]-qtbase-dev-tools".
+
+If you need to manually find the headers and libraries, you
+need your compiler flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or this:
+
+	-I%p/lib/qt515-%type_pkg[qt]/include
+
+...and your linker flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or
+
+	-L%p/lib/qt515-%type_pkg[qt]/lib
+
+In this case, it's still a good idea to set your PATH to contain
+"%p/lib/qt515-%type_pkg[qt]/bin" as well.
+<<
+DescPackaging: <<
+We follow Ubuntu's lead in using the separate tarballs and separate most
+of the packages the same way they do.
+
+* libvpx test fails looking for vpx/svc_context.h which is not normally installed.
+* system jpeglib needs libjpeg8-turbo.
+* libxml2 needs ICU enabled in order to work here.
+* system-lcms2 patch from Debian (very slightly modified).
+<<
+<<
+# End Info4

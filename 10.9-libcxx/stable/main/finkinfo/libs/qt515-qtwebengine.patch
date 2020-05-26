@@ -1,0 +1,139 @@
+diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn
+--- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn	2020-05-06 09:21:29.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/build/toolchain/mac/BUILD.gn	2020-05-24 17:58:49.000000000 -0500
+@@ -205,7 +205,7 @@
+     tool("cc") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
++      command = "$cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/include/opus {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_c}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "CC {{output}}"
+       outputs = [
+@@ -216,7 +216,7 @@
+     tool("cxx") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$cxx -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
++      command = "$cxx -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/include/opus {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_cc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "CXX {{output}}"
+       outputs = [
+@@ -227,7 +227,7 @@
+     tool("asm") {
+       # For GCC we can just use the C compiler to compile assembly.
+       depfile = "{{output}}.d"
+-      command = "$cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{asmflags}} -c {{source}} -o {{output}}"
++      command = "$cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/include/opus {{include_dirs}} -I@FINK_PREFIX@/include {{asmflags}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "ASM {{output}}"
+       outputs = [
+@@ -238,7 +238,7 @@
+     tool("objc") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$cc -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_objc}} -c {{source}} -o {{output}}"
++      command = "$cc -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/include/opus {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_objc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "OBJC {{output}}"
+       outputs = [
+@@ -249,7 +249,7 @@
+     tool("objcxx") {
+       depfile = "{{output}}.d"
+       precompiled_header_type = "gcc"
+-      command = "$cxx -MMD -MF $depfile {{defines}} {{include_dirs}} {{cflags}} {{cflags_objcc}} -c {{source}} -o {{output}}"
++      command = "$cxx -MD -MF $depfile {{defines}} -I@FINK_PREFIX@/include/opus {{include_dirs}} -I@FINK_PREFIX@/include {{cflags}} {{cflags_objcc}} -c {{source}} -o {{output}}"
+       depsformat = "gcc"
+       description = "OBJCXX {{output}}"
+       outputs = [
+@@ -314,7 +314,7 @@
+         link_command += " -Wl,-install_name,@rpath/\"{{target_output_name}}{{output_extension}}\" "
+       }
+       link_command += dsym_switch
+-      link_command += "{{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{libs}} {{solibs}}"
++      link_command += "-L@FINK_PREFIX@/lib {{ldflags}} -o \"$dylib\" -Wl,-filelist,\"$rspfile\" {{libs}} {{solibs}}"
+ 
+       replace_command = "if ! cmp -s \"$temporary_tocname\" \"$tocname\"; then mv \"$temporary_tocname\" \"$tocname\""
+       extract_toc_command = "{ $otool -l \"$dylib\" | grep LC_ID_DYLIB -A 5; $nm -gP \"$dylib\" | cut -f1-2 -d' ' | grep -v U\$\$; true; }"
+@@ -360,7 +360,7 @@
+       rspfile = sofile + ".rsp"
+       pool = "//build/toolchain:link_pool($default_toolchain)"
+ 
+-      link_command = "$linker_driver $ld -bundle {{ldflags}} -o \"$sofile\" -Wl,-filelist,\"$rspfile\""
++      link_command = "$linker_driver $ld -bundle -L@FINK_PREFIX@/lib {{ldflags}} -o \"$sofile\" -Wl,-filelist,\"$rspfile\""
+       if (is_component_build) {
+         link_command += " -Wl,-install_name,@rpath/{{target_output_name}}{{output_extension}}"
+       }
+diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin
+--- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin	2020-05-06 09:21:29.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/icu/source/config/mh-darwin	2020-05-24 17:59:34.000000000 -0500
+@@ -56,14 +56,14 @@
+ 
+ ## Compilation and dependency rules
+ %.$(STATIC_O): $(srcdir)/%.c
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(STATICCPPFLAGS) $(STATICCFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(STATICCPPFLAGS) $(STATICCFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ %.o: $(srcdir)/%.c
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(DYNAMICCPPFLAGS) $(DYNAMICCFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.c) $(DYNAMICCPPFLAGS) $(DYNAMICCFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ 
+ %.$(STATIC_O): $(srcdir)/%.cpp
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(STATICCPPFLAGS) $(STATICCXXFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(STATICCPPFLAGS) $(STATICCXXFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ %.o: $(srcdir)/%.cpp
+-	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(DYNAMICCPPFLAGS) $(DYNAMICCXXFLAGS)) -MMD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
++	$(call SILENT_COMPILE,$(strip $(COMPILE.cc) $(DYNAMICCPPFLAGS) $(DYNAMICCXXFLAGS)) -MD -MT "$*.d $*.o $*.$(STATIC_O)" -o $@ $<)
+ 
+ ## Versioned libraries rules
+ 
+diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix
+--- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix	2020-05-06 09:21:29.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/libwebm/source/Makefile.unix	2020-05-24 18:00:09.000000000 -0500
+@@ -3,7 +3,7 @@
+ DEFINES   += -D__STDC_LIMIT_MACROS
+ INCLUDES  := -I.
+ CXXFLAGS  := -W -Wall -g -std=c++11
+-ALL_CXXFLAGS := -MMD -MP $(DEFINES) $(INCLUDES) $(CXXFLAGS)
++ALL_CXXFLAGS := -MD -MP $(DEFINES) $(INCLUDES) $(CXXFLAGS)
+ LIBWEBMA  := libwebm.a
+ LIBWEBMSO := libwebm.so
+ WEBMOBJS  := mkvmuxer/mkvmuxer.o mkvmuxer/mkvmuxerutil.o mkvmuxer/mkvwriter.o
+diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk
+--- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-05-06 09:21:29.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-05-24 18:00:24.000000000 -0500
+@@ -10,7 +10,7 @@
+ 	$(SHAREDLIB_DIR)/$(LIBPREFIX)$(PROJECT_NAME).$(SHAREDLIBSUFFIXMAJORVER)
+ SHARED = -dynamiclib
+ SHARED += -current_version $(CURRENT_VERSION) -compatibility_version $(COMPATIBILITY_VERSION)
+-CFLAGS += -Wall -fPIC -MMD -MP
++CFLAGS += -Wall -fPIC -MD -MP
+ ifeq ($(ASM_ARCH), x86)
+ ASMFLAGS += -DPREFIX
+ ifeq ($(ARCH), x86_64)
+diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/core/configure.json qtwebengine-everywhere-src-5.15.0-rc2/src/core/configure.json
+--- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/core/configure.json	2020-05-06 09:21:29.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.0-rc2/src/core/configure.json	2020-05-24 18:04:29.000000000 -0500
+@@ -119,12 +119,12 @@
+         },
+         "webengine-geolocation": {
+             "label": "Geolocation",
+-            "condition": "module.positioning",
++           "condition": "config.macos && module.positioning",
+             "output": [ "publicFeature" ]
+         },
+         "webengine-pulseaudio": {
+             "label": "Use PulseAudio",
+-            "autoDetect": "config.unix",
++            "autoDetect": "config.macos && config.unix",
+             "condition": "libs.webengine-pulseaudio",
+             "output": [ "privateFeature" ]
+         },
+@@ -207,7 +207,7 @@
+         "webengine-poppler-cpp": {
+             "label": "poppler-cpp",
+             "autoDetect": "config.unix",
+-            "condition": "libs.webengine-poppler-cpp",
++            "condition": "config.macos && libs.webengine-poppler-cpp",
+             "output": [ "privateFeature" ]
+         },
+         "webengine-arm-thumb": {

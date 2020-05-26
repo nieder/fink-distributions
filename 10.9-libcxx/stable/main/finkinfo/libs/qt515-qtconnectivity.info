@@ -1,0 +1,231 @@
+Info4: <<
+Package: qt515-%type_pkg[qt]-qtconnectivity
+Version: 5.15.0
+Revision: 1
+Distribution: 10.13, 10.14, 10.14.5, 10.15
+Description: Cross-Platform framework (%type_pkg[qt])
+Type: qt (mac)
+License: LGPL/GFDL
+Maintainer: None <fink-devel@lists.sourceforge.net>
+### First version 5.3.1 by Hanspeter Niederstrasser
+### Free to upgrade and modify parameters, but please discuss
+### first on the fink-devel list
+
+Depends: <<
+	qt515-%type_pkg[qt]-qtbluetooth-shlibs (= %v-%r),
+	qt515-%type_pkg[qt]-qtnfc-shlibs (= %v-%r)
+<<
+BuildDepends: <<
+	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
+	qt515-%type_pkg[qt]-qtbase (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative (>= %v-1),
+	qt515-%type_pkg[qt]-qtsql-sqlite-plugins (>= %v-1),
+	qt515-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
+	fink (>= 0.34.4-1),
+	fink-buildenv-modules,
+	fink-package-precedence,
+	pkgconfig,
+	xcode (>= 10.1),
+	xcode.app (>= 10.1),
+	( %type_pkg[qt] = x11 ) x11-dev
+<<
+BuildConflicts: uuid, libevent1.4, libevent2, libev4
+BuildDependsOnly: true
+Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtconnectivity-everywhere-src-%v-rc2.tar.xz
+Source-MD5: aaae8177021eb864a71875cd7222a836
+#PatchFile: qt5-qtconnectivity.patch
+#PatchFile-MD5: aee00a7f828a7c19d90435eac91a00c0
+
+NoSetCPPFLAGS: true
+NoSetCFLAGS: true
+NoSetCXXFLAGS: true
+GCC: 4.0
+CompileScript: <<
+	#!/bin/sh -ev
+	. %p/sbin/fink-buildenv-helper.sh
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+	export PATH=${QT_FINK_PREFIX}/bin:$PATH
+	export PKG_CONFIG_PATH=%p/lib/glib-2.0/pkgconfig-strict:$PKG_CONFIG_PATH
+	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
+	qmake_flags="$qmake_flags QMAKE_CXXFLAGS+=\"-F%b/lib\""
+	qmake $qmake_flags
+	/usr/bin/make -w
+	/usr/bin/make -w -C src/bluetooth docs
+	/usr/bin/make -w -C src/nfc docs
+	fink-package-precedence --depfile-ext='\.d' --prohibit-bdep=%N .
+<<
+
+InstallScript: <<
+	#!/bin/sh -ev
+	export QT_FINK_PREFIX=%p/lib/qt515-%type_pkg[qt]
+
+	make install INSTALL_ROOT=%d
+	make install_docs INSTALL_ROOT=%d
+
+	### Make sure we have all the right packages (by probing .pc files)
+	pushd %d/${QT_FINK_PREFIX}/lib/pkgconfig
+		### keep <space> at end of the 'want' list of .pc files
+		want="Qt5Bluetooth.pc Qt5Nfc.pc "
+		have=`/bin/ls -1 | tr '\n' ' '`
+	popd
+	if [ "$want" != "$have" ]; then
+		echo "Unexpected build results (mismatched list of .pc)"
+		echo "  want: '$want'"
+		echo "  have: '$have'"
+		exit 1
+	fi
+
+	### Clean up .la, .prl files
+	### remove build-dir location and fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.prl -o -name \*.la | xargs \
+		perl -pi -e 's|%b/lib|%p/lib|g; s|-framework |-Wl,-framework,|g; s|QMAKE_PRL_BUILD_DIR \= (.*)$|QMAKE_PRL_BUILD_DIR = |g'
+
+	### Clean up .pc files
+	### fix '-framework ' -> '-Wl,-framework,'
+	find %d/${QT_FINK_PREFIX}/lib -name \*.pc | xargs \
+		perl -pi -e 's|-framework |-Wl,-framework,|g'
+
+	### Fix includedir to point into framework dir instead of non-existent include/QtFOO
+	### https://bugreports.qt.io/browse/QTBUG-35256
+	#for QTLIB in Bluetooth Nfc; do
+	#	perl -pi -e "s|/Qt$QTLIB|/Qt$QTLIB.framework/Headers|g" %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#	perl -pi -e 's|I\$\{includedir\}/Qt|F\$\{libdir\} -I\$\{libdir\}/Qt|g' %d/${QT_FINK_PREFIX}/lib/pkgconfig/Qt5$QTLIB.pc
+	#done
+
+	### clean up Libs.private
+	perl -ni -e 'print unless /Libs.private:/' %d/${QT_FINK_PREFIX}/lib/pkgconfig/*.pc
+<<
+#AppBundles:
+DocFiles: LICENSE.LGPL3 LICENSE.GPL3-EXCEPT
+
+SplitOff: <<
+	Package: qt515-%type_pkg[qt]-qtbluetooth-shlibs
+	Description: Qt Bluetooth library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtconcurrent-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtBluetooth.framework/Versions/5/QtBluetooth
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5Bluetooth.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtBluetooth.framework/Versions/5/QtBluetooth       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5Bluetooth.5.dylib       5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail: <<
+Qt Connectivity Bluetooth library.
+	<<
+<<
+SplitOff2: <<
+	Package: qt515-%type_pkg[qt]-qtnfc-shlibs
+	Description: Qt Nfc library (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1)
+	<<
+	Files: <<
+		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtNfc.framework/Versions/5/QtNfc
+		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5Nfc.5*.dylib
+	<<
+	Shlibs: <<
+		( %type_pkg[qt] = mac ) %p/lib/qt515-%type_pkg[qt]/lib/QtNfc.framework/Versions/5/QtNfc       5.15.0 %n (>= 5.15.0-1)
+		( %type_pkg[qt] = x11 ) %p/lib/qt515-%type_pkg[qt]/lib/libQt5Nfc.5.dylib       5.15.0 %n (>= 5.15.0-1)
+	<<
+	DescDetail: <<
+Qt Connectivity NFC module.
+	<<
+<<
+SplitOff3: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtbluetooth
+	Description: Qt5 bluetooth QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtbluetooth-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtgui-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtBluetooth
+	<<
+	DescDetail:
+<<
+SplitOff4: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtnfc
+	Description: Qt5 Nfc QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtnfc-shlibs (>= %v-%r),
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtNfc
+	<<
+	DescDetail:
+<<
+SplitOff40: <<
+	Package: qt515-%type_pkg[qt]-qtconnectivity-doc
+	Description: Qt5 connectivity documentation (%type_pkg[qt])
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtbluetooth{.qch,}
+		lib/qt515-%type_pkg[qt]/share/doc/qt5/qtnfc{.qch,}
+	<<
+	DescDetail: Documentation for Qt.
+<<
+Homepage: http://qt-project.org
+DescDetail: <<
+Qt is a cross-platform application and UI framework with APIs for
+C++ programming and Qt Quick for rapid UI creation.
+
+* Intuitive class libraries
+* Easy to use and learn
+* Produce highly readable, easily maintainable and reusable code
+* High runtime performance and small footprint
+<<
+DescUsage: <<
+To compile against this Qt5, you need to make sure that
+"%p/lib/qt515-%type_pkg[qt]/bin" is first in your PATH and that qmake is
+present. Qmake is provided by "qt515-%type_pkg[qt]-qtbase-dev-tools".
+
+If you need to manually find the headers and libraries, you
+need your compiler flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or this:
+
+	-I%p/lib/qt515-%type_pkg[qt]/include
+
+...and your linker flags to contain:
+
+	-F%p/lib/qt515-%type_pkg[qt]/lib
+
+	or
+
+	-L%p/lib/qt515-%type_pkg[qt]/lib
+
+In this case, it's still a good idea to set your PATH to contain
+"%p/lib/qt515-%type_pkg[qt]/bin" as well.
+<<
+DescPackaging: <<
+We follow Ubuntu's lead in using the separate tarballs and separate most
+of the packages the same way they do.
+
+Correctly find Bluetooth headers in MacOSX10.12 SDK
+https://codereview.qt-project.org/gitweb?p=qt%2Fqtconnectivity.git;a=commit;h=462323dba4f963844e8c9911da27a0d21e4abf43
+
+src/bluetooth/osx/osxbtcentralmanager.mm
+src/bluetooth/osx/osxbtledeviceinquiry.mm
+Build bluetooth on 10.13.  Needs qtbase %r=4.
+Based on https://bugreports.qt.io/browse/QTBUG-62658
+
+Xcode11.3 patch
+Based on:
+https://codereview.qt-project.org/c/qt/qtconnectivity/+/267021
+https://github.com/qt/qtconnectivity/commit/6b6b4fea87b7b9063299e4b15adf307f71319cf1
+<<
+<<
+# End Info4
