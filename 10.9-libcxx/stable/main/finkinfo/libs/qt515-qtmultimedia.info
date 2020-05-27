@@ -32,10 +32,15 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtmultimedia-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 7142034bfdb9e67c8fcba654cc55b7bb
-PatchFile: qt515-qtmultimedia.patch
-PatchFile-MD5: ca91a280f691fe61b161c0bc23009cff
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtmultimedia-everywhere-src-%v.tar.xz
+Source-MD5: b912f37e97682c71c403f53182ac1f71
+#PatchFile: qt515-qtmultimedia.patch
+#PatchFile-MD5: ca91a280f691fe61b161c0bc23009cff
+PatchScript: <<
+#	%{default_script}
+	echo "QMAKE_EXTRA_ARGS += -no-gstreamer" >> .qmake.conf
+	echo "QMAKE_EXTRA_ARGS += -no-pulseaudio" >> .qmake.conf
+<<
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

@@ -34,8 +34,8 @@ BuildDepends: <<
 	xcode.app (>= 10.1)
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtquickcontrols-everywhere-src-%v-rc2.tar.xz
-Source-MD5: a8e38793cfe4ab1059736c765e4f8aa5
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtquickcontrols-everywhere-src-%v.tar.xz
+Source-MD5: 9851969f106699f5c6a6446e8b8e2008
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

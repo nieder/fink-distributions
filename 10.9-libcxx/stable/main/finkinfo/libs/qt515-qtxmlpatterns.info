@@ -17,6 +17,7 @@ Depends: <<
 BuildDepends: <<
 	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt515-%type_pkg[qt]-qtbase (>= %v-1),
+	qt515-%type_pkg[qt]-qtdeclarative (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
@@ -27,8 +28,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtxmlpatterns-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 3f4776938a793cdc7fc5f391c19d180c
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtxmlpatterns-everywhere-src-%v.tar.xz
+Source-MD5: 47082f6a346300eb99aede54d87cb55c
 # Keep in case the tools SplitOff needs to be moved to its own package.
 #PatchScript: <<
 #	perl -pi -e 's|SUBDIRS \+\=|SUBDIRS -=|g' tools/tools.pro
@@ -130,6 +131,20 @@ SplitOff2: <<
 	<<
 	DescDetail: <<
 	<<
+<<
+SplitOff20: <<
+	Package: qt515-%type_pkg[qt]-qml-module-qtquick-xmllistmodel
+	Description: Qt5 XML List Model QML module (%type_pkg[qt])
+	Depends: <<
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtxmlpatterns-shlibs (>= %v-%r)
+	<<
+	Files: <<
+		lib/qt515-%type_pkg[qt]/share/qt5/qml/QtQuick/XmlListModel
+	<<
+	DescDetail:
 <<
 Homepage: http://qt-project.org
 DescDetail: <<

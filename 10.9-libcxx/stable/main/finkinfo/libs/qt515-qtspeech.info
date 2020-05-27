@@ -28,8 +28,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtspeech-everywhere-src-%v-rc2.tar.xz
-Source-MD5: b4746f2c3b7431617215f2987158c6ae
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtspeech-everywhere-src-%v.tar.xz
+Source-MD5: e4939722b84d5fff0ac0175dd57fae30
 
 PatchFile: qt515-qtspeech.patch
 PatchFile-MD5: 4bb3db73530ee7fc1320c8e4d71dda37

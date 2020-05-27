@@ -33,8 +33,8 @@ BuildDepends: <<
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtgraphicaleffects-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 177fcb824208cfee1af46efd2647ecd3
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtgraphicaleffects-everywhere-src-%v.tar.xz
+Source-MD5: 49b4c2b29624d30ce7196ca94cb11a6a
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

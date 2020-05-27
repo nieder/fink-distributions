@@ -48,8 +48,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtbase-everywhere-src-%v-rc2.tar.xz
-Source-MD5: ff999d15a1b0c59c43c80ad31644dcd5
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtbase-everywhere-src-%v.tar.xz
+Source-MD5: 6be4d7ae4cd0d75c50b452cc05117009
 PatchFile: qt515-qtbase.patch
 PatchFile-MD5: 4884a15df200e5a2b53ee62b64ea8d29
 #PatchFile2: qt5-x11-qtbase.patch

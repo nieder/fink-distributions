@@ -32,8 +32,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qttools-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 0d6158a73c7712b9b2c4432fd4bc6e41
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qttools-everywhere-src-%v.tar.xz
+Source-MD5: cbf72f34c9d53508f95b9a4db5322ffa
 PatchFile: qt515-qttools.patch
 PatchFile-MD5: 3d0d1a0ae9f0b24aea54cd7a50c2fe88
 PatchScript: <<

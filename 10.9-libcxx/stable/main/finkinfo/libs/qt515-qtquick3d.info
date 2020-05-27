@@ -35,8 +35,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtquick3d-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 1a2f9dc27dd9132738cde606c2d08977
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtquick3d-everywhere-src-%v.tar.xz
+Source-MD5: cfa35fb877db6da7616cc74e468d73fb
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

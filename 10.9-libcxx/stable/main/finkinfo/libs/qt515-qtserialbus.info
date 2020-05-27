@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtserialbus-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 7d8cabe58be99ea5ee045b1e4319b1a9
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtserialbus-everywhere-src-%v.tar.xz
+Source-MD5: c40798a1e05f0cf7deb7fcdb8c4f44c5
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
