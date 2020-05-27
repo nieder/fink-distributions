@@ -32,8 +32,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtgamepad-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 8059634bb05ef228a64a817bb8cd69c4
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtgamepad-everywhere-src-%v.tar.xz
+Source-MD5: 2cde50f4f17866f6705000038a26970b
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

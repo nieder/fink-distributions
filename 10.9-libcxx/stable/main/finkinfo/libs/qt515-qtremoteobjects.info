@@ -28,8 +28,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtremoteobjects-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 5087e891d75cc27f7068c530a44ab40b
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtremoteobjects-everywhere-src-%v.tar.xz
+Source-MD5: b9dcca9685b14b9284e8dca73f24ab35
 
 #PatchFile: qt5-qtspeech.patch
 #PatchFile-MD5: 5d67366769c6fa484f041b7aef4a5b49

@@ -28,8 +28,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtmacextras-everywhere-src-%v-rc2.tar.xz
-Source-MD5: d4c007cf02f1103f7e4f26f7156be1af
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtmacextras-everywhere-src-%v.tar.xz
+Source-MD5: 471239e6569093669039cd5f3f89e498
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

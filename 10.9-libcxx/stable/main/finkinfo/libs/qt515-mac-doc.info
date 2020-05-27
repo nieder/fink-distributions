@@ -68,18 +68,18 @@ BuildDepends: <<
 	xcode (>= 10.1),
 	xcode.app (>= 10.1)
 <<
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtdoc-everywhere-src-%v-rc2.tar.xz
-Source-MD5: ebb0f061a98216ef1bfac858f899bd13
-Source2: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtbase-everywhere-src-%v-rc2.tar.xz
-Source2-MD5: ff999d15a1b0c59c43c80ad31644dcd5
-Source3: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtdeclarative-everywhere-src-%v-rc2.tar.xz
-Source3-MD5: a34eca96e14e69356ed013ee89390c31
-Source4: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtscript-everywhere-src-%v-rc2.tar.xz
-Source4-MD5: 095288fd01a4a80dd36798ed10f3a4bf
-Source5: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qttools-everywhere-src-%v-rc2.tar.xz
-Source5-MD5: 0d6158a73c7712b9b2c4432fd4bc6e41
-Source6: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtxmlpatterns-everywhere-src-%v-rc2.tar.xz
-Source6-MD5: 3f4776938a793cdc7fc5f391c19d180c
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtdoc-everywhere-src-%v.tar.xz
+Source-MD5: 37596edef3de35ee46ea530b38a30005
+Source2: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtbase-everywhere-src-%v.tar.xz
+Source2-MD5: 6be4d7ae4cd0d75c50b452cc05117009
+Source3: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtdeclarative-everywhere-src-%v.tar.xz
+Source3-MD5: 4f8eb9c5d9c7ceadd52c97eee81d0ad3
+Source4: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtscript-everywhere-src-%v.tar.xz
+Source4-MD5: c4b29d0d95192781d7071dd0c59b40e6
+Source5: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qttools-everywhere-src-%v.tar.xz
+Source5-MD5: cbf72f34c9d53508f95b9a4db5322ffa
+Source6: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtxmlpatterns-everywhere-src-%v.tar.xz
+Source6-MD5: 47082f6a346300eb99aede54d87cb55c
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
@@ -96,7 +96,7 @@ CompileScript: <<
 	/usr/bin/make -w docs
 	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
 		echo "Building $module docs ..."
-		pushd %b/../$module-everywhere-src-%v-rc2
+		pushd %b/../$module-everywhere-src-%v
 			if [ "x$module" == "xqtbase" ]; then
 				install -m 0755 -d bin
 				ln -s $QT_FINK_PREFIX/bin/qdoc bin/qdoc
@@ -126,7 +126,7 @@ InstallScript: <<
 	make -w install_docs INSTALL_ROOT=%d
 	for module in qtbase qtdeclarative qtscript qttools qtxmlpatterns; do
 		echo "Installing $module docs ..."
-		pushd %b/../$module-everywhere-src-%v-rc2
+		pushd %b/../$module-everywhere-src-%v
 			make -w install_docs INSTALL_ROOT=%d
 		popd
 		echo "Done installing docs for $module ..."

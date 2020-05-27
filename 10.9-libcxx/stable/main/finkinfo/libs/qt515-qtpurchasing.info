@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtpurchasing-everywhere-src-%v-rc2.tar.xz
-Source-MD5: decfde0d8356f3216c14cafed9b2919b
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtpurchasing-everywhere-src-%v.tar.xz
+Source-MD5: 0d6a8004625b52cdf6257bbb67fcace9
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

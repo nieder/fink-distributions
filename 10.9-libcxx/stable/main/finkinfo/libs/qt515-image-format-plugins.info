@@ -37,8 +37,8 @@ BuildDepends: <<
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtimageformats-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 96a3e23548837f5208bdef6d95698717
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtimageformats-everywhere-src-%v.tar.xz
+Source-MD5: a26b637f0eab4450f1b767fbc2e583c2
 PatchScript: <<
 	echo "QMAKE_LFLAGS += -L%p/lib" >> .qmake.conf
 	echo "QMAKE_EXTRA_ARGS += -jasper" >> .qmake.conf

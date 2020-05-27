@@ -44,8 +44,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qt3d-everywhere-src-%v-rc2.tar.xz
-Source-MD5: f7d15f9d8612bd1d7cb36251329d3fa1
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qt3d-everywhere-src-%v.tar.xz
+Source-MD5: 7f8a281467f80dbd94eb9406e2e7e671
 
 PatchScript: <<
 	echo "QMAKE_EXTRA_ARGS += -system-assimp" >> .qmake.conf

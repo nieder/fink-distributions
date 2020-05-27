@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtsensors-everywhere-src-%v-rc2.tar.xz
-Source-MD5: f847b4ebb36030eb0fe711ab645176e1
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtsensors-everywhere-src-%v.tar.xz
+Source-MD5: 6b03faa6e075f8a7831077cf465afac5
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

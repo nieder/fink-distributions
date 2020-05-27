@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtwebchannel-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 76d4c90c78294fc6dde759059e7ab38c
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebchannel-everywhere-src-%v.tar.xz
+Source-MD5: 3b38221f05415a941649ecc5a14034bc
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

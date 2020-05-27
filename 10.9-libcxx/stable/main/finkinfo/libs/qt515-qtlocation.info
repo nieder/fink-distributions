@@ -34,8 +34,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtlocation-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 35601a123c0f83204a66ff59a8fd4437
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtlocation-everywhere-src-%v.tar.xz
+Source-MD5: 5896e9e7844c54b47cfaf759b3d1a879
 PatchFile: qt515-qtlocation.patch
 PatchFile-MD5: b4d36f0db0a1a55490beff1c1847c060
 PatchScript: <<

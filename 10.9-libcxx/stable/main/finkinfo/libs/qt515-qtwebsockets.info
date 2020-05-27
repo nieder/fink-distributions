@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtwebsockets-everywhere-src-%v-rc2.tar.xz
-Source-MD5: f72a0165e7078e04e6f34fd71bea071f
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebsockets-everywhere-src-%v.tar.xz
+Source-MD5: cd667ab86db6c64ab0fce165ca8162bc
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

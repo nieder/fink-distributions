@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtscxml-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 1bfdaf7f95983fe0db5a39898f9fc569
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtscxml-everywhere-src-%v.tar.xz
+Source-MD5: 7646f4987d995284f8cc5e4c192159b1
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

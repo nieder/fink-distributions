@@ -15,7 +15,9 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 Depends: <<
 	qt515-%type_pkg[qt]-qtwebengine-shlibs (= %v-%r),
 	qt515-%type_pkg[qt]-qtwebenginecore-shlibs (= %v-%r),
-	qt515-%type_pkg[qt]-qtwebenginewidgets-shlibs (= %v-%r)
+	qt515-%type_pkg[qt]-qtwebenginewidgets-shlibs (= %v-%r),
+	qt515-%type_pkg[qt]-qtpdf-shlibs (= %v-%r),
+	qt515-%type_pkg[qt]-qtpdfwidgets-shlibs (= %v-%r)
 <<
 BuildDepends: <<
 	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
@@ -27,31 +29,18 @@ BuildDepends: <<
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
 	fink-package-precedence,
-	freetype219,
-	lcms2,
-	libavcodec58-4.0-dev,
-	libavformat58-4.0-dev,
-	libavutil56-4.0-dev,
-	libswresample3-4.0-dev,
-	libevent2.1,
-	libopus0-dev,
-	libre2,
-	libsnappy1-dev,
-	libwebp7,
 	ninja,
 	pkgconfig,
-	poppler0-cpp-dev,
 	python27,
-	openssl110-dev,
 	xcode (>= 8.3.3),
 	xcode.app (>= 8.3.3),
 	( %type_pkg[qt] = x11 ) x11-dev
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtwebengine-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 0c7acd5ba035f71bc76306e15a1c3b2f
-Source2: http://www.opensource.apple.com/source/zlib/zlib-43/zlib/zlib.pc?txt
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebengine-everywhere-src-%v.tar.xz
+Source-MD5: 738478b9409f8615ca0f63738b73bbae
+Source2: https://www.opensource.apple.com/source/zlib/zlib-43/zlib/zlib.pc?txt
 Source2Rename: zlib.pc
 Source2-MD5: 51a7a85e92c0fafd00adbb1d0c1bc805
 Source2ExtractDir: pkgconfig
@@ -83,6 +72,7 @@ PatchScript: <<
 	# ffmpeg
 	# freetype
 	# libpng
+	# libre2
 	# opus
 	# zlib
 	pushd src/3rdparty/chromium/build/linux/unbundle
@@ -109,18 +99,14 @@ CompileScript: <<
 	export PKG_CONFIG_LIBDIR=`pwd`/../pkgconfig:%p/lib/glib-2.0/pkgconfig-strict:%p/lib/pkgconfig
 	qmake_flags="QMAKE_CXXFLAGS+=\"-MD\""
 	#echo "QMAKE_CXXFLAGS += -MD" >> .qmake.conf
-	echo "QMAKE_EXTRA_ARGS += -system-opus" >> .qmake.conf
-	echo "QMAKE_EXTRA_ARGS += -system-webp" >> .qmake.conf
-	#echo "QMAKE_EXTRA_ARGS += -system-webengine-ffmpeg" >> .qmake.conf
+	#echo "QMAKE_EXTRA_ARGS += -system-opus" >> .qmake.conf
+	#echo "QMAKE_EXTRA_ARGS += -system-webp" >> .qmake.conf
+	#echo "QMAKE_EXTRA_ARGS += -system-ffmpeg" >> .qmake.conf
 	echo "QMAKE_EXTRA_ARGS += -no-pulseaudio" >> .qmake.conf
 	echo "QMAKE_EXTRA_ARGS += -no-alsa" >> .qmake.conf
-	# for finding -llcms2
-	#echo "QMAKE_LIBDIR += %p/lib" >> .qmake.conf
-	#echo "QMAKE_LFLAGS += -L%p/lib/ffmpeg-4.0/lib" >> .qmake.conf
-	#echo "QMAKE_LFLAGS += -L%p/lib" >> .qmake.conf
-
 	# native-spellchecker gets rid of qwebengine_convert_dict in bin
 	#echo "QMAKE_EXTRA_ARGS += -webengine-native-spellchecker" >> .qmake.conf
+
 	qmake $qmake_flags
 	/usr/bin/make -w
 	
@@ -180,16 +166,10 @@ SplitOff: <<
 		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
-		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
-		lcms2-shlibs,
-		libevent2.1-shlibs,
-		freetype219-shlibs,
-		libopus0-shlibs,
-		libpng16-shlibs
+		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1)
 	<<
-	Conflicts: qt515-%type_pkg[qt]-qtwebengine (<< 5.9.3-1)
-	Replaces: qt515-%type_pkg[qt]-qtwebengine (<< 5.9.3-1)
 	Files: <<
 		( %type_pkg[qt] = mac ) lib/qt515-%type_pkg[qt]/lib/QtWebEngineCore.framework/Versions/5/QtWebEngineCore
 		( %type_pkg[qt] = x11 ) lib/qt515-%type_pkg[qt]/lib/libQt5WebEngineCore.5*.dylib
@@ -211,6 +191,7 @@ SplitOff2: <<
 		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-%r)
@@ -235,6 +216,7 @@ SplitOff3: <<
 		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtprintsupport-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquickwidgets-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
@@ -299,6 +281,7 @@ SplitOff10: <<
 		qt515-%type_pkg[qt]-qtnetwork-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebengine-shlibs (>= %v-%r),
@@ -320,6 +303,7 @@ SplitOff20: <<
 		qt515-%type_pkg[qt]-qtpositioning-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtprintsupport-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtqml-shlibs (>= %v-1),
+		qt515-%type_pkg[qt]-qtqmlmodels-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtquick-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebchannel-shlibs (>= %v-1),
 		qt515-%type_pkg[qt]-qtwebenginecore-shlibs (>= %v-1),
@@ -353,8 +337,7 @@ SplitOff30: <<
 	Package: qt515-%type_pkg[qt]-webengine-dev-tools
 	Description: Qt5 WebEngine dev tools (%type_pkg[qt])
 	Depends: <<
-		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1),
-		libevent2.1-shlibs
+		qt515-%type_pkg[qt]-qtcore-shlibs (>= %v-1)
 	<<
 	Files: <<
 		lib/qt515-%type_pkg[qt]/bin

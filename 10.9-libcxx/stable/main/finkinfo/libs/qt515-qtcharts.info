@@ -30,8 +30,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtcharts-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 0d013a5a1c617721d76c9a7d3b127b09
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtcharts-everywhere-src-%v.tar.xz
+Source-MD5: a82366fced05a22724e93edccc09433f
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

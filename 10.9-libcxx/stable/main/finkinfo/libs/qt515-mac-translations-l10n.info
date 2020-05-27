@@ -26,8 +26,8 @@ BuildDepends: <<
 	xcode.app (>= 10.1)
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qttranslations-everywhere-src-%v-rc2.tar.xz
-Source-MD5: f3a060ff578a638355e7461e2aec49b5
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qttranslations-everywhere-src-%v.tar.xz
+Source-MD5: 7cbff3badaf760badbcdb5fcba109c1b
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

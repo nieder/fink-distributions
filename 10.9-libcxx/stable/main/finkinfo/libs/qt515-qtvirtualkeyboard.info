@@ -32,8 +32,8 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
-Source: https://download.qt.io/development_releases/qt/5.15/%v-rc2/submodules/qtvirtualkeyboard-everywhere-src-%v-rc2.tar.xz
-Source-MD5: 69ce90ad0fa98deaf27b81fb00b409e1
+Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtvirtualkeyboard-everywhere-src-%v.tar.xz
+Source-MD5: f5fa358b75dca974ecec4ce2f05ebfe0
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
