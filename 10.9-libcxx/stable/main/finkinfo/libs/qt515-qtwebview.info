@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtwebview
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -34,7 +34,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebview-everywhere-src-%v.tar.xz
-Source-MD5: 5097722cf61c675da7640fd231c1025e
+Source-MD5: 447dde7294bfe7dd377559e91e8d5fd1
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

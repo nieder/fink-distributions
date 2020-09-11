@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-image-format-plugins
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Qt5 image format plugins (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -38,7 +38,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtimageformats-everywhere-src-%v.tar.xz
-Source-MD5: a26b637f0eab4450f1b767fbc2e583c2
+Source-MD5: 40cfeeda8d1851a3be5273789d936168
 PatchScript: <<
 	echo "QMAKE_LFLAGS += -L%p/lib" >> .qmake.conf
 	echo "QMAKE_EXTRA_ARGS += -jasper" >> .qmake.conf

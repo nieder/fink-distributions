@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtvirtualkeyboard
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: GPL3
@@ -33,7 +33,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtvirtualkeyboard-everywhere-src-%v.tar.xz
-Source-MD5: f5fa358b75dca974ecec4ce2f05ebfe0
+Source-MD5: 0b3262923499856ccee29ec5dfb96371
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

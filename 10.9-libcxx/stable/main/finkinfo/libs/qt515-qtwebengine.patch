@@ -98,18 +98,18 @@ diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third
  LIBWEBMA  := libwebm.a
  LIBWEBMSO := libwebm.so
  WEBMOBJS  := mkvmuxer/mkvmuxer.o mkvmuxer/mkvmuxerutil.o mkvmuxer/mkvwriter.o
-diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk
---- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-05-06 09:21:29.000000000 -0500
-+++ qtwebengine-everywhere-src-5.15.0-rc2/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-05-24 18:00:24.000000000 -0500
+diff -ruN qtwebengine-everywhere-src-5.15.1-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk
+--- qtwebengine-everywhere-src-5.15.1-orig/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-09-01 06:02:34.000000000 -0500
++++ qtwebengine-everywhere-src-5.15.1/src/3rdparty/chromium/third_party/openh264/src/build/platform-darwin.mk	2020-09-10 06:54:39.000000000 -0500
 @@ -10,7 +10,7 @@
  	$(SHAREDLIB_DIR)/$(LIBPREFIX)$(PROJECT_NAME).$(SHAREDLIBSUFFIXMAJORVER)
  SHARED = -dynamiclib
  SHARED += -current_version $(CURRENT_VERSION) -compatibility_version $(COMPATIBILITY_VERSION)
 -CFLAGS += -Wall -fPIC -MMD -MP
 +CFLAGS += -Wall -fPIC -MD -MP
- ifeq ($(ASM_ARCH), x86)
- ASMFLAGS += -DPREFIX
- ifeq ($(ARCH), x86_64)
+ ifeq ($(USE_STACK_PROTECTOR), Yes)
+ CFLAGS += -fstack-protector-all
+ endif
 diff -ruN qtwebengine-everywhere-src-5.15.0-rc2-orig/src/core/configure.json qtwebengine-everywhere-src-5.15.0-rc2/src/core/configure.json
 --- qtwebengine-everywhere-src-5.15.0-rc2-orig/src/core/configure.json	2020-05-06 09:21:29.000000000 -0500
 +++ qtwebengine-everywhere-src-5.15.0-rc2/src/core/configure.json	2020-05-24 18:04:29.000000000 -0500

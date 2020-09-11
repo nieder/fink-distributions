@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtdeclarative
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -39,7 +39,7 @@ Replaces: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtdeclarative-everywhere-src-%v.tar.xz
-Source-MD5: 4f8eb9c5d9c7ceadd52c97eee81d0ad3
+Source-MD5: 6866c4a35f1b4d052f4c7e9345fdd42c
 #PatchFile: qt5-x11-qtdeclarative.patch
 #PatchFile-MD5: 1187406ea5748675b2de9b86d6ce14a3
 #PatchScript: <<

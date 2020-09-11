@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtscxml
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL3
@@ -31,7 +31,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtscxml-everywhere-src-%v.tar.xz
-Source-MD5: 7646f4987d995284f8cc5e4c192159b1
+Source-MD5: ba44589b84423fa2f6ea400314c9fc0d
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

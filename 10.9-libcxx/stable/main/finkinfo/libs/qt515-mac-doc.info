@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-mac-doc
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Qt5 documentation (%type_pkg[qt])
 Type: qt (mac)
 License: GFDL
@@ -69,17 +69,17 @@ BuildDepends: <<
 	xcode.app (>= 10.1)
 <<
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtdoc-everywhere-src-%v.tar.xz
-Source-MD5: 37596edef3de35ee46ea530b38a30005
+Source-MD5: 1e11f38265ddda2f1423d87f25ea0eb4
 Source2: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtbase-everywhere-src-%v.tar.xz
-Source2-MD5: 6be4d7ae4cd0d75c50b452cc05117009
+Source2-MD5: b47df719209d657fcd9edc6a7bdcf33e
 Source3: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtdeclarative-everywhere-src-%v.tar.xz
-Source3-MD5: 4f8eb9c5d9c7ceadd52c97eee81d0ad3
+Source3-MD5: 6866c4a35f1b4d052f4c7e9345fdd42c
 Source4: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtscript-everywhere-src-%v.tar.xz
-Source4-MD5: c4b29d0d95192781d7071dd0c59b40e6
+Source4-MD5: 404dc5a0d37923b18144104cfd1442e7
 Source5: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qttools-everywhere-src-%v.tar.xz
-Source5-MD5: cbf72f34c9d53508f95b9a4db5322ffa
+Source5-MD5: 8634ae3e54f21727d1fcabf60e9b5291
 Source6: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtxmlpatterns-everywhere-src-%v.tar.xz
-Source6-MD5: 47082f6a346300eb99aede54d87cb55c
+Source6-MD5: b379dd2c28935c35f51541b3f5bea916
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

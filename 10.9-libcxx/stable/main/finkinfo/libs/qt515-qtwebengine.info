@@ -1,9 +1,9 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtwebengine
 # QTBUG-77750
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: GPL/GFDL
@@ -39,14 +39,14 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebengine-everywhere-src-%v.tar.xz
-Source-MD5: 738478b9409f8615ca0f63738b73bbae
+Source-MD5: e37c44664e8a55471b92b07695f7f7db
 Source2: https://www.opensource.apple.com/source/zlib/zlib-43/zlib/zlib.pc?txt
 Source2Rename: zlib.pc
 Source2-MD5: 51a7a85e92c0fafd00adbb1d0c1bc805
 Source2ExtractDir: pkgconfig
 
 PatchFile: qt515-qtwebengine.patch
-PatchFile-MD5: 297785bdd70b892cdc36d93b5b698d44
+PatchFile-MD5: ecf96ed4fd59b57f372ef6e451a2f3b0
 # Debian's patch uses lcms2-2.6/include. Switch to lcms/include to match tree.
 #PatchFile2: qt515-qtwebengine-system-lcms2.patch
 #PatchFile2-MD5: a3c28ca3fd41190805ee36777f6af3bf

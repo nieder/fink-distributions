@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtquick3d
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: GPL3
@@ -36,7 +36,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtquick3d-everywhere-src-%v.tar.xz
-Source-MD5: cfa35fb877db6da7616cc74e468d73fb
+Source-MD5: fb392a55a582215b6542f5a59d1695fd
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

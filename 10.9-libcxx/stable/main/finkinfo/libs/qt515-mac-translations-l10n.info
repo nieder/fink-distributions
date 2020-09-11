@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-mac-translations-l10n
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Qt5 translations (%type_pkg[qt])
 Type: qt (mac)
 License: GPL
@@ -27,7 +27,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qttranslations-everywhere-src-%v.tar.xz
-Source-MD5: 7cbff3badaf760badbcdb5fcba109c1b
+Source-MD5: 4742dfcb8fa21a899341daabab241716
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
