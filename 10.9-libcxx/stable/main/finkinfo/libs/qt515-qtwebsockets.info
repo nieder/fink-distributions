@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtwebsockets
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: GPL
@@ -31,7 +31,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebsockets-everywhere-src-%v.tar.xz
-Source-MD5: cd667ab86db6c64ab0fce165ca8162bc
+Source-MD5: 3a772b4732542c7c200610d4d78313af
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

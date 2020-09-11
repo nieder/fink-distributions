@@ -1,9 +1,9 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qml-module-qtquick-controls
 # qtquick-layouts moved to qtdeclarative as of 5.7.0
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Qt5 Quick Controls (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -35,7 +35,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtquickcontrols-everywhere-src-%v.tar.xz
-Source-MD5: 9851969f106699f5c6a6446e8b8e2008
+Source-MD5: c84a116b1342d967aa5deae135f7a9e6
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

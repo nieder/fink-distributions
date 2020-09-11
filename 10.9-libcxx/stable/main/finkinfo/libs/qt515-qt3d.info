@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qt3d
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -45,7 +45,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qt3d-everywhere-src-%v.tar.xz
-Source-MD5: 7f8a281467f80dbd94eb9406e2e7e671
+Source-MD5: 81d8591e5e44bfe10d85b36431abb626
 
 PatchScript: <<
 	echo "QMAKE_EXTRA_ARGS += -system-assimp" >> .qmake.conf

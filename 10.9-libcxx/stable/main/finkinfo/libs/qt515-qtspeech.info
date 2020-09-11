@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtspeech
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: GPL/GFDL
@@ -14,10 +14,11 @@ Maintainer: None <fink-devel@lists.sourceforge.net>
 Depends: <<
 	qt515-%type_pkg[qt]-qttexttospeech-shlibs (= %v-%r)
 <<
+# qtmultimedia only needed if flite is enabled
+# 	qt515-%type_pkg[qt]-qtmultimedia (>= %v-1),
 BuildDepends: <<
 	qt515-%type_pkg[qt]-qtbase-dev-tools (>= %v-1),
 	qt515-%type_pkg[qt]-qtbase (>= %v-1),
-	qt515-%type_pkg[qt]-qtmultimedia (>= %v-1),
 	qt515-%type_pkg[qt]-qttools-dev-tools (>= %v-1),
 	fink (>= 0.34.4-1),
 	fink-buildenv-modules,
@@ -29,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtspeech-everywhere-src-%v.tar.xz
-Source-MD5: e4939722b84d5fff0ac0175dd57fae30
+Source-MD5: a94303e87086254d42f630d0b80cf8b1
 
 PatchFile: qt515-qtspeech.patch
 PatchFile-MD5: 4bb3db73530ee7fc1320c8e4d71dda37

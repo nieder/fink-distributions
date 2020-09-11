@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtserialport
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL/GFDL
@@ -30,7 +30,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtserialport-everywhere-src-%v.tar.xz
-Source-MD5: 07dd5a0c9c30feb896a59631b88ce21c
+Source-MD5: 7efda843f54606b5d978c8f8d416e04f
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

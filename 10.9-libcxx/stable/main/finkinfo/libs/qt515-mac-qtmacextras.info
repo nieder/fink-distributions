@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-mac-qtmacextras
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -29,7 +29,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtmacextras-everywhere-src-%v.tar.xz
-Source-MD5: 471239e6569093669039cd5f3f89e498
+Source-MD5: 72f97b64216865825fb0148a697ad31e
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qml-module-quicktimeline
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Qt5 quicktimeline QML module (%type_pkg[qt])
 Type: qt (mac)
 License: GPL
@@ -34,7 +34,7 @@ BuildDepends: <<
 <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtquicktimeline-everywhere-src-%v.tar.xz
-Source-MD5: 4b5c2ab2dd13eb3d715e03cc345af47e
+Source-MD5: caa4bc5ea2102762996808eaba15ee43
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true

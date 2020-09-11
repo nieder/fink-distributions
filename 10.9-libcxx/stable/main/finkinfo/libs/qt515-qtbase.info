@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtbase
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL3/OpenSSL
@@ -49,7 +49,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtbase-everywhere-src-%v.tar.xz
-Source-MD5: 6be4d7ae4cd0d75c50b452cc05117009
+Source-MD5: b47df719209d657fcd9edc6a7bdcf33e
 PatchFile: qt515-qtbase.patch
 PatchFile-MD5: 4884a15df200e5a2b53ee62b64ea8d29
 #PatchFile2: qt5-x11-qtbase.patch

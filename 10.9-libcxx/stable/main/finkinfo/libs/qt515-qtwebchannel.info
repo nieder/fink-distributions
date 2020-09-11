@@ -1,8 +1,8 @@
 Info4: <<
 Package: qt515-%type_pkg[qt]-qtwebchannel
-Version: 5.15.0
+Version: 5.15.1
 Revision: 1
-Distribution: 10.13, 10.14, 10.14.5, 10.15
+Distribution: 10.13, 10.14, 10.14.5, 10.15, 11.0
 Description: Cross-Platform framework (%type_pkg[qt])
 Type: qt (mac)
 License: LGPL
@@ -31,7 +31,7 @@ BuildDepends: <<
 BuildConflicts: uuid, libevent1.4, libevent2, libev4
 BuildDependsOnly: true
 Source: https://download.qt.io/official_releases/qt/5.15/%v/submodules/qtwebchannel-everywhere-src-%v.tar.xz
-Source-MD5: 3b38221f05415a941649ecc5a14034bc
+Source-MD5: 097025fcda723e32888bb154c9f0755d
 
 NoSetCPPFLAGS: true
 NoSetCFLAGS: true
